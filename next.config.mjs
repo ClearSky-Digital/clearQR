@@ -4,6 +4,8 @@ const nextConfig = {
   output: "export",
   trailingSlash: true,
   images: { unoptimized: true },
+  // Set CLEARQR_BASE_PATH (for example /qr) at build time to serve from a subpath.
+  basePath: process.env.CLEARQR_BASE_PATH || "",
   reactStrictMode: true,
   poweredByHeader: false,
 };
