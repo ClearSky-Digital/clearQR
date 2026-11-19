@@ -1,0 +1,32 @@
+# ClearQR web app: the released image, served by nginx on port 8080 inside the container, at /clearQR/.
+#
+# Portainer: Stacks > Add stack > Web editor, paste this file, deploy. To move to a newer release, set CLEARQR_TAG
+# (default 1.0.0) under "Environment variables" and "Update the stack".
+#
+# Reverse proxy: no host port is published. The container joins the existing external Docker network that the
+# proxy is on (default name publictools; set PROXY_NETWORK to change it), and the proxy forwards to clearqr:8080.
+# With Nginx Proxy Manager: a custom location /clearQR on the host, scheme http, forward hostname clearqr, port 8080.
+#
+# The released image serves the app under /clearQR. For another subpath, build your own image from this repository
+# with --build-arg CLEARQR_BASE_PATH=/your-path (empty for a site root).
+services:
+  clearqr:
+    image: ghcr.io/clearsky-digital/clearqr:${CLEARQR_TAG:-1.0.0}
+    container_name: clearqr
+    restart: unless-stopped
+    expose:
+      - "8080"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: ${PROXY_NETWORK:-publictools}
+    external: true

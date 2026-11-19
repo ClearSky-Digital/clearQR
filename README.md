@@ -64,6 +64,33 @@ The web app is a static folder (`out/`). A static host that lets you set respons
 
 Hosts that cannot set headers (GitHub Pages is one) still serve a working app with the meta policy, but `frame-ancestors` and the other headers do not apply there.
 
+## Docker
+
+Each release is published as the image `ghcr.io/clearsky-digital/clearqr`, tagged with its version and `latest`. It serves the app under `/clearQR/` with the headers above. The container has no Node at run time, runs as a non-root user, and listens on port 8080.
+
+To try it on your own computer:
+
+```
+docker run --rm -p 8088:8080 ghcr.io/clearsky-digital/clearqr:1.0.0
+```
+
+The app is then at `http://localhost:8088/clearQR/`.
+
+On a server behind a reverse proxy, use `docker-compose.yml`. It pulls the release image and publishes no host port. Instead it joins the proxy's existing Docker network, and the proxy forwards to `clearqr:8080` with the subpath unchanged. Two settings:
+
+- `CLEARQR_TAG`: the release to run (default `1.0.0`).
+- `PROXY_NETWORK`: the name of the proxy's external network (default `publictools`).
+
+With Nginx Proxy Manager, add a custom location `/clearQR` on the host, with scheme `http`, forward hostname `clearqr` and port `8080`.
+
+To serve the app under another subpath, build your own image. The subpath is fixed into the pages at build time:
+
+```
+docker build --build-arg CLEARQR_BASE_PATH=/qr -t clearqr .
+```
+
+Leave `CLEARQR_BASE_PATH` empty for a site root.
+
 ## Security notes
 
 - Nothing leaves the device: the page makes no network requests, and a policy in the page blocks them.

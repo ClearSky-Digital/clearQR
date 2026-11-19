@@ -1,6 +1,6 @@
 {
   "name": "clearqr",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Free, private QR code generator. Everything runs in your browser or your terminal.",
   "license": "MIT",
   "author": "ClearSky Digital LLC (https://cscloud.digital)",
