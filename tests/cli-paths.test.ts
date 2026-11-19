@@ -68,7 +68,7 @@ describe("command line output and option checks", () => {
   const run = (cwd: string, args: string[]) => spawnSync(process.execPath, ["--import", tsxLoader, cli, ...args], { cwd, encoding: "utf8" });
   const cfg = (file: string) => JSON.stringify({ type: "link", content: { url: "https://example.com" }, output: { file } });
 
-  it("refuses a config output file that goes out through a symbolic link", () => {
+  it("refuses a config output file that goes out through a symbolic link", (ctx) => {
     const work = join(dir, "work");
     mkdirSync(work, { recursive: true });
     const elsewhere = join(dir, "elsewhere");
@@ -76,7 +76,8 @@ describe("command line output and option checks", () => {
     try {
       symlinkSync(elsewhere, join(work, "link"), "junction");
     } catch {
-      return; // links not allowed on this machine
+      ctx.skip("this machine does not allow creating symbolic links or junctions");
+      return;
     }
     writeFileSync(join(work, "c.json"), cfg("link/out.png"));
     const r = run(work, ["c.json"]);
