@@ -82,7 +82,8 @@ describe("command line", () => {
 describe("schema file", () => {
   it("matches the zod schema (run `npm run schema` after changing it)", () => {
     const committed = readFileSync(join(root, "schema", "clearqr.schema.json"), "utf8");
-    expect(committed).toBe(buildJsonSchema());
+    // Line endings depend on the checkout settings, so compare without them.
+    expect(committed.replace(/\r\n/g, "\n")).toBe(buildJsonSchema().replace(/\r\n/g, "\n"));
   });
 
   it("is valid JSON describing every type", () => {
