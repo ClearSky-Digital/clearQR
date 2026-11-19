@@ -1,6 +1,6 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { renderSvg, type Config } from "../src/core";
 import { decodePixels } from "../src/core/decode";
@@ -8,6 +8,16 @@ import { loadConfigFile } from "../src/node/files";
 import { nodeRasterizer } from "../src/node/raster";
 
 export const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+/** File URL of the tsx loader, found by walking up from this folder (the mutation proof runs tests from a copy inside the repo). */
+export function tsxLoaderUrl(): string {
+  let dir = root;
+  for (let i = 0; i < 6; i++) {
+    const file = join(dir, "node_modules", "tsx", "dist", "esm", "index.mjs");
+    if (existsSync(file)) return pathToFileURL(file).href;
+    dir = join(dir, "..");
+  }
+  throw new Error("tsx is not installed");
+}
 export const example = (name: string) => join(root, "examples", `${name}.json`);
 
 export function loadExample(name: string): Config {

@@ -2,11 +2,10 @@ import { spawnSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { pathToFileURL } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { parseConfig } from "../src/core/schema";
 import { MAX_IMAGE_FILE_BYTES, loadConfigFile } from "../src/node/files";
-import { root } from "./helpers";
+import { root, tsxLoaderUrl } from "./helpers";
 
 const dir = mkdtempSync(join(tmpdir(), "clearqr-paths-"));
 const sub = join(dir, "cfg");
@@ -64,7 +63,7 @@ describe("image files named in a config (command line)", () => {
 
 describe("command line output and option checks", () => {
   const cli = join(root, "src", "cli.ts");
-  const tsxLoader = pathToFileURL(join(root, "node_modules", "tsx", "dist", "esm", "index.mjs")).href;
+  const tsxLoader = tsxLoaderUrl();
   const run = (cwd: string, args: string[]) => spawnSync(process.execPath, ["--import", tsxLoader, cli, ...args], { cwd, encoding: "utf8" });
   const cfg = (file: string) => JSON.stringify({ type: "link", content: { url: "https://example.com" }, output: { file } });
 
@@ -130,7 +129,7 @@ describe("images that say bitmap but hold markup", () => {
 
 describe("output file names from a config", () => {
   const cli = join(root, "src", "cli.ts");
-  const tsxLoader = pathToFileURL(join(root, "node_modules", "tsx", "dist", "esm", "index.mjs")).href;
+  const tsxLoader = tsxLoaderUrl();
   const run = (cwd: string, args: string[]) => spawnSync(process.execPath, ["--import", tsxLoader, cli, ...args], { cwd, encoding: "utf8" });
 
   it("refuses a colon and Windows device names, and still allows -o and ordinary names", () => {
