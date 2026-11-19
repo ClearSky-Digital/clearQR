@@ -81,7 +81,18 @@ On a server behind a reverse proxy, use `docker-compose.yml`. It pulls the relea
 - `CLEARQR_TAG`: the release to run (default `1.0.2`).
 - `PROXY_NETWORK`: the name of the proxy's external network (default `publictools`).
 
-With Nginx Proxy Manager, add a custom location `/clearqr` on the host, with scheme `http`, forward hostname `clearqr` and port `8080`. The container redirects the subpath in any other capitalization (such as `/ClearQR/`) to `/clearqr/`, but the proxy's own locations match case exactly, so add a second custom location for any capitalized form you expect people to type, such as `/clearQR`, with the same settings.
+With Nginx Proxy Manager, edit the proxy host, open the Advanced tab (not a custom location's gear) and paste:
+
+```
+location ~* ^/clearqr(/|$) {
+    proxy_pass http://clearqr:8080;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+
+This matches the path in any capitalization, and the container then redirects to the lowercase `/clearqr/`. A plain custom location `/clearqr` (scheme `http`, forward hostname `clearqr`, port `8080`) also works, for the lowercase address only.
 
 To serve the app under another subpath, build your own image. The subpath is fixed into the pages at build time:
 

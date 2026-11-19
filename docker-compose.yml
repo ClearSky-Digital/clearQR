@@ -5,9 +5,9 @@
 #
 # Reverse proxy: no host port is published. The container joins the existing external Docker network that the
 # proxy is on (default name publictools; set PROXY_NETWORK to change it), and the proxy forwards to clearqr:8080.
-# With Nginx Proxy Manager: a custom location /clearqr on the host, scheme http, forward hostname clearqr, port 8080.
-# The container redirects other capitalizations (such as /clearQR) to /clearqr, but the proxy matches case exactly,
-# so add a second custom location /clearQR with the same settings if that form is in use.
+# With Nginx Proxy Manager: edit the proxy host, open the Advanced tab and paste the location block from the README.
+# It matches /clearqr in any capitalization and the container redirects to lowercase /clearqr/.
+# A plain custom location /clearqr (http, clearqr, 8080) also works, for the lowercase address only.
 #
 # The released image serves the app under /clearqr. For another subpath, build your own image from this repository
 # with --build-arg CLEARQR_BASE_PATH=/your-path (empty for a site root).
