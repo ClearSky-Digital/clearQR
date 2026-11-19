@@ -81,3 +81,19 @@ export function landsInside(base: string, target: string): boolean {
   const rel = relative(root, real);
   return !(rel === ".." || rel.startsWith(".." + sep) || isAbsolute(rel));
 }
+
+const RESERVED = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i;
+
+/**
+ * Why a file name from a config is not allowed as an output path, or null if it is fine.
+ * A colon would write an NTFS alternate data stream, and Windows device names such as
+ * NUL or CON are not real files.
+ */
+export function outputNameProblem(path: string): string | null {
+  if (path.includes(":")) return "The output file name cannot contain a colon.";
+  for (const part of path.split(/[\/]+/)) {
+    if (RESERVED.test(part.split(".")[0].trimEnd())) return `"${part}" is a reserved Windows device name.`;
+    if (/[. ]$/.test(part) && part !== "." && part !== "..") return "The output file name cannot end in a dot or a space.";
+  }
+  return null;
+}

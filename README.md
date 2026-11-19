@@ -67,8 +67,8 @@ Hosts that cannot set headers (GitHub Pages is one) still serve a working app wi
 ## Security notes
 
 - Nothing leaves the device: the page makes no network requests, and a policy in the page blocks them.
-- On the command line, an image path in a config and an output path from a config must stay inside the folder (symbolic links are followed before the check). `-o` is your own choice and is not restricted. SVG logos are refused on the command line.
-- Known and accepted: the page policy allows inline scripts (the static export needs them), and Windows reserved file names such as `NUL.png` are not specially handled.
+- On the command line, an image path in a config and an output path from a config must stay inside the folder (symbolic links are followed before the check), cannot contain a colon, and cannot be a Windows device name such as `NUL`. An image that claims to be a bitmap but holds SVG or XML is refused. `-o` is your own choice and is not restricted. SVG logos are refused on the command line.
+- Known and accepted: the page policy allows inline scripts (the static export needs them).
 
 ## Tests
 

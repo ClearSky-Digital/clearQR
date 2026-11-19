@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, extname, isAbsolute, resolve } from "node:path";
 import { renderSvg, verify } from "./core";
-import { landsInside, loadConfigFile } from "./node/files";
+import { landsInside, loadConfigFile, outputNameProblem } from "./node/files";
 import { nodeRasterizer } from "./node/raster";
 
 const HELP = `clearqr: make a QR code from a JSON config. Nothing leaves your computer.
@@ -71,8 +71,13 @@ async function main(): Promise<number> {
       console.error("The config's output file must be inside the current folder. Use -o to choose another place.");
       return 2;
     }
+    const problem = outputNameProblem(config.output.file);
+    if (problem) {
+      console.error(`The config's output file is not allowed: ${problem} Use -o to choose another name.`);
+      return 2;
+    }
   }
-  const out = resolve(args.out ?? config.output.file ?? `clearqr.${format}`);
+  const out =resolve(args.out ?? config.output.file ?? `clearqr.${format}`);
   const svg = renderSvg(config);
   mkdirSync(dirname(out), { recursive: true });
   if (format === "svg") writeFileSync(out, svg);

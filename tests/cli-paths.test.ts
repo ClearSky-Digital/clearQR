@@ -126,3 +126,24 @@ describe("images that say bitmap but hold markup", () => {
     expect(parseConfig(cfg(`data:image/svg+xml;base64,${b64("<svg/>")}`)).ok).toBe(true);
   });
 });
+
+describe("output file names from a config", () => {
+  const cli = join(root, "src", "cli.ts");
+  const tsxLoader = pathToFileURL(join(root, "node_modules", "tsx", "dist", "esm", "index.mjs")).href;
+  const run = (cwd: string, args: string[]) => spawnSync(process.execPath, ["--import", tsxLoader, cli, ...args], { cwd, encoding: "utf8" });
+
+  it("refuses a colon and Windows device names, and still allows -o and ordinary names", () => {
+    const work = join(dir, "names");
+    mkdirSync(work, { recursive: true });
+    for (const file of ["ok.png:stream", "nul.png", "CON", "sub/aux.svg", "com1.txt.png", "name.png.", "name.png "]) {
+      writeFileSync(join(work, "c.json"), JSON.stringify({ type: "link", content: { url: "https://example.com" }, output: { file } }));
+      const r = run(work, ["c.json"]);
+      expect(r.status, file).toBe(2);
+      expect(r.stderr, file).toContain("not allowed");
+    }
+    writeFileSync(join(work, "c.json"), JSON.stringify({ type: "link", content: { url: "https://example.com" }, output: { file: "console.png" } }));
+    expect(run(work, ["c.json"]).status).toBe(0);
+    expect(existsSync(join(work, "console.png"))).toBe(true);
+    expect(run(work, ["c.json", "-o", "nul.png"]).status).not.toBe(2);
+  });
+});
