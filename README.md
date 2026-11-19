@@ -53,6 +53,23 @@ One JSON file describes a code: `type`, `content`, `style`, `image` and `output`
 
 The check uses a software decoder at several sizes. It is a strong sign, not a guarantee: phone cameras differ, and printing changes things. Test a printed code with your own phone before you print many.
 
+## Hosting headers
+
+The web app is a static folder (`out/`). A static host that lets you set response headers should send these, because a `<meta>` tag cannot do all of it:
+
+- `Content-Security-Policy`: the same policy the page carries in its meta tag, plus `frame-ancestors 'none'`.
+- `Referrer-Policy: no-referrer`
+- `X-Content-Type-Options: nosniff`
+- `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+
+Hosts that cannot set headers (GitHub Pages is one) still serve a working app with the meta policy, but `frame-ancestors` and the other headers do not apply there.
+
+## Security notes
+
+- Nothing leaves the device: the page makes no network requests, and a policy in the page blocks them.
+- On the command line, an image path in a config and an output path from a config must stay inside the folder (symbolic links are followed before the check). `-o` is your own choice and is not restricted. SVG logos are refused on the command line.
+- Known and accepted: the page policy allows inline scripts (the static export needs them), and Windows reserved file names such as `NUL.png` are not specially handled.
+
 ## Tests
 
 ```

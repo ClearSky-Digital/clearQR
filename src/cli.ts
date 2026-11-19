@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname, extname, isAbsolute, relative, resolve, sep } from "node:path";
+import { dirname, extname, isAbsolute, resolve } from "node:path";
 import { renderSvg, verify } from "./core";
-import { loadConfigFile } from "./node/files";
+import { landsInside, loadConfigFile } from "./node/files";
 import { nodeRasterizer } from "./node/raster";
 
 const HELP = `clearqr: make a QR code from a JSON config. Nothing leaves your computer.
@@ -25,8 +25,12 @@ function parseArgs(argv: string[]): Args | string {
     const v = argv[i];
     if (v === "-h" || v === "--help") a.help = true;
     else if (v === "--no-verify") a.verify = false;
-    else if (v === "-o" || v === "--out") a.out = argv[++i];
-    else if (v === "-f" || v === "--format") a.format = argv[++i];
+    else if (v === "-o" || v === "--out" || v === "-f" || v === "--format") {
+      const next = argv[++i];
+      if (next === undefined || next.startsWith("-")) return `${v} needs a value`;
+      if (v === "-o" || v === "--out") a.out = next;
+      else a.format = next;
+    }
     else if (v.startsWith("-")) return `Unknown option ${v}`;
     else if (!a.config) a.config = v;
     else return `Unexpected argument ${v}`;
@@ -63,8 +67,7 @@ async function main(): Promise<number> {
   // file must stay inside the current folder, so a config from someone else cannot
   // overwrite files elsewhere.
   if (!args.out && config.output.file) {
-    const rel = relative(process.cwd(), resolve(config.output.file));
-    if (rel === ".." || rel.startsWith(".." + sep) || isAbsolute(rel) || isAbsolute(config.output.file)) {
+    if (isAbsolute(config.output.file) || !landsInside(process.cwd(), config.output.file)) {
       console.error("The config's output file must be inside the current folder. Use -o to choose another place.");
       return 2;
     }

@@ -1,5 +1,5 @@
-import { readFileSync, realpathSync, statSync } from "node:fs";
-import { dirname, extname, isAbsolute, relative, resolve, sep } from "node:path";
+import { existsSync, readFileSync, realpathSync, statSync } from "node:fs";
+import { basename, dirname, extname, isAbsolute, relative, resolve, sep } from "node:path";
 import { parseConfig, type Config, type ParseResult } from "../core/schema";
 
 const MIME: Record<string, string> = {
@@ -61,3 +61,23 @@ export function loadConfigFile(path: string): ParseResult {
 }
 
 export type { Config };
+
+/**
+ * True when `target` (which may not exist yet) lands inside `base` once symbolic links
+ * are followed. The nearest existing parent is resolved with realpath, so a link inside
+ * `base` that points elsewhere does not count as inside.
+ */
+export function landsInside(base: string, target: string): boolean {
+  const root = realpathSync(base);
+  let existing = resolve(target);
+  const rest: string[] = [];
+  while (!existsSync(existing)) {
+    const parent = dirname(existing);
+    if (parent === existing) return false;
+    rest.unshift(basename(existing));
+    existing = parent;
+  }
+  const real = resolve(realpathSync(existing), ...rest);
+  const rel = relative(root, real);
+  return !(rel === ".." || rel.startsWith(".." + sep) || isAbsolute(rel));
+}

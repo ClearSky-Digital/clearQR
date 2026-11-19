@@ -1,6 +1,8 @@
-import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { MAX_IMAGE_FILE_BYTES, loadConfigFile } from "../src/node/files";
 import { root } from "./helpers";
@@ -56,5 +58,49 @@ describe("image files named in a config (command line)", () => {
 
   it("says plainly when the file is missing", () => {
     expect(loadConfigFile(write("missing.json", { mode: "logo", src: "assets/nope.png" })).ok).toBe(false);
+  });
+});
+
+describe("command line output and option checks", () => {
+  const cli = join(root, "src", "cli.ts");
+  const tsxLoader = pathToFileURL(join(root, "node_modules", "tsx", "dist", "esm", "index.mjs")).href;
+  const run = (cwd: string, args: string[]) => spawnSync(process.execPath, ["--import", tsxLoader, cli, ...args], { cwd, encoding: "utf8" });
+  const cfg = (file: string) => JSON.stringify({ type: "link", content: { url: "https://example.com" }, output: { file } });
+
+  it("refuses a config output file that goes out through a symbolic link", () => {
+    const work = join(dir, "work");
+    mkdirSync(work, { recursive: true });
+    const elsewhere = join(dir, "elsewhere");
+    mkdirSync(elsewhere, { recursive: true });
+    try {
+      symlinkSync(elsewhere, join(work, "link"), "junction");
+    } catch {
+      return; // links not allowed on this machine
+    }
+    writeFileSync(join(work, "c.json"), cfg("link/out.png"));
+    const r = run(work, ["c.json"]);
+    expect(r.status).toBe(2);
+    expect(r.stderr).toContain("inside the current folder");
+    expect(existsSync(join(elsewhere, "out.png"))).toBe(false);
+  });
+
+  it("still writes a config output file in a new subfolder", () => {
+    const work = join(dir, "work2");
+    mkdirSync(work, { recursive: true });
+    writeFileSync(join(work, "c.json"), cfg("sub/new/out.png"));
+    expect(run(work, ["c.json"]).status).toBe(0);
+    expect(existsSync(join(work, "sub", "new", "out.png"))).toBe(true);
+  });
+
+  it("treats -o or -f without a value as a usage error", () => {
+    const work = join(dir, "work3");
+    mkdirSync(work, { recursive: true });
+    writeFileSync(join(work, "c.json"), cfg("a.png"));
+    for (const args of [["c.json", "-o"], ["c.json", "--out"], ["c.json", "-f"], ["c.json", "-o", "--no-verify"]]) {
+      const r = run(work, args);
+      expect(r.status, args.join(" ")).toBe(1);
+      expect(r.stderr).toContain("needs a value");
+    }
+    expect(existsSync(join(work, "a.png"))).toBe(false);
   });
 });
