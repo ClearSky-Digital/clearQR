@@ -12,6 +12,7 @@ import {
   type QrType,
 } from "@/core";
 import { browserRasterizer, fileToDataUri } from "../lib/browserRaster";
+import { canDownload, importTooLarge, vcardImportNotice } from "../lib/rules";
 import { TYPE_META, contentToForm, emptyValues, formToContent, type Field, type Values } from "../lib/forms";
 
 type StyleState = {
@@ -158,7 +159,7 @@ export default function Generator() {
     if (!file) return;
     setNotice("");
     try {
-      if (file.size > 12_000_000) {
+      if (importTooLarge(file.size)) {
         setNotice("That settings file is too large to be a ClearQR config.");
         return;
       }
@@ -168,9 +169,8 @@ export default function Generator() {
         return;
       }
       const c = res.config;
-      if (c.type === "vcard" && ((c.content.phones?.length ?? 0) > 2 || (c.content.emails?.length ?? 0) > 2)) {
-        setNotice("This form shows two phone numbers and two emails. Extra ones in the file were left out, so check the code before you download it.");
-      }
+      const warn = vcardImportNotice(c);
+      if (warn) setNotice(warn);
       setType(c.type);
       setValuesByType((all) => ({ ...all, [c.type]: contentToForm(c.type, c.content as Record<string, unknown>) }));
       setStyle({
@@ -283,10 +283,10 @@ export default function Generator() {
               </ul>
             )}
             <div className="actions">
-              <button className="btn primary" disabled={!svg || busy || status.state === "checking"} onClick={() => download("png")}>
+              <button className="btn primary" disabled={!canDownload(svg, busy, status.state)} onClick={() => download("png")}>
                 Download PNG{status.state === "wont" ? " anyway" : ""}
               </button>
-              <button className="btn" disabled={!svg || busy || status.state === "checking"} onClick={() => download("svg")}>
+              <button className="btn" disabled={!canDownload(svg, busy, status.state)} onClick={() => download("svg")}>
                 Download SVG
               </button>
             </div>

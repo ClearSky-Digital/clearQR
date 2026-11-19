@@ -35,6 +35,7 @@ export const browserRasterizer: Rasterizer = {
 
 export const MAX_SIDE = 8000;
 export const MAX_PIXELS = 50_000_000;
+export const HEADER_BYTES = 2_000_000;
 
 /** Reads the pixel size from the file header (PNG, GIF, JPEG, WebP) without decoding the image. */
 export function imageSize(b: Uint8Array): { width: number; height: number } | null {
@@ -81,8 +82,10 @@ export async function fileToDataUri(file: File, max: number, kind: "png" | "jpeg
     throw new Error("Use a PNG, JPEG, WebP or GIF image.");
   }
   if (file.size > 20_000_000) throw new Error("That image is over 20 MB. Try a smaller one.");
-  const dims = imageSize(new Uint8Array(await file.slice(0, 65536).arrayBuffer()));
-  if (!dims) throw new Error("That image could not be read. Try a different file.");
+  // Phone photos can carry large EXIF or color-profile blocks before the size marker,
+  // so look through the first 2 MB, which is far more than any real header needs.
+  const dims = imageSize(new Uint8Array(await file.slice(0, HEADER_BYTES).arrayBuffer()));
+  if (!dims) throw new Error("This image's size could not be read, so it was not loaded. Try saving it again as a PNG or JPEG.");
   if (dims.width > MAX_SIDE || dims.height > MAX_SIDE || dims.width * dims.height > MAX_PIXELS) {
     throw new Error("That image is too large to load here. Try one under 8000 pixels on each side.");
   }

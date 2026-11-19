@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname, extname, isAbsolute, relative, resolve } from "node:path";
+import { dirname, extname, isAbsolute, relative, resolve, sep } from "node:path";
 import { renderSvg, verify } from "./core";
 import { loadConfigFile } from "./node/files";
 import { nodeRasterizer } from "./node/raster";
@@ -64,7 +64,7 @@ async function main(): Promise<number> {
   // overwrite files elsewhere.
   if (!args.out && config.output.file) {
     const rel = relative(process.cwd(), resolve(config.output.file));
-    if (rel.startsWith("..") || isAbsolute(rel) || isAbsolute(config.output.file)) {
+    if (rel === ".." || rel.startsWith(".." + sep) || isAbsolute(rel) || isAbsolute(config.output.file)) {
       console.error("The config's output file must be inside the current folder. Use -o to choose another place.");
       return 2;
     }
