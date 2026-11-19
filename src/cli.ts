@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname, extname, resolve } from "node:path";
+import { dirname, extname, isAbsolute, relative, resolve } from "node:path";
 import { renderSvg, verify } from "./core";
 import { loadConfigFile } from "./node/files";
 import { nodeRasterizer } from "./node/raster";
@@ -58,6 +58,16 @@ async function main(): Promise<number> {
   if (format !== "png" && format !== "svg") {
     console.error("Format must be png or svg.");
     return 1;
+  }
+  // A path given with -o is the user's own choice. A path that comes from the config
+  // file must stay inside the current folder, so a config from someone else cannot
+  // overwrite files elsewhere.
+  if (!args.out && config.output.file) {
+    const rel = relative(process.cwd(), resolve(config.output.file));
+    if (rel.startsWith("..") || isAbsolute(rel) || isAbsolute(config.output.file)) {
+      console.error("The config's output file must be inside the current folder. Use -o to choose another place.");
+      return 2;
+    }
   }
   const out = resolve(args.out ?? config.output.file ?? `clearqr.${format}`);
   const svg = renderSvg(config);

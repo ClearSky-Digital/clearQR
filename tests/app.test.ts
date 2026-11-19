@@ -5,6 +5,7 @@ import { renderToString } from "react-dom/server";
 import { createElement } from "react";
 import { parseConfig, QR_TYPES } from "../src/core";
 import { TYPE_META, contentToForm, emptyValues, formToContent } from "../app/lib/forms";
+import { imageSize } from "../app/lib/browserRaster";
 import Generator from "../app/components/Generator";
 import { loadExample, root } from "./helpers";
 
@@ -33,6 +34,28 @@ describe("form mapping (what import and the form rely on)", () => {
       expect(TYPE_META[t].fields.length).toBeGreaterThan(0);
       expect(() => parseConfig({ type: t, content: formToContent(t, emptyValues(t)) })).not.toThrow();
     }
+  });
+});
+
+describe("image header size check (guards the upload against huge images)", () => {
+  it("reads PNG, GIF, JPEG and WebP sizes without decoding", () => {
+    const png = new Uint8Array(readFileSync(join(root, "examples", "assets", "sample-logo.png")));
+    const s = imageSize(png);
+    expect(s && s.width > 0 && s.width === s.height).toBe(true);
+    const bigPng = new Uint8Array(png);
+    new DataView(bigPng.buffer).setUint32(16, 30000);
+    new DataView(bigPng.buffer).setUint32(20, 30000);
+    expect(imageSize(bigPng)).toEqual({ width: 30000, height: 30000 });
+    const gif = new Uint8Array([71, 73, 70, 56, 57, 97, 0x20, 0x03, 0x58, 0x02, 0, 0]);
+    expect(imageSize(gif)).toEqual({ width: 800, height: 600 });
+    const jpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0, 4, 0, 0, 0xff, 0xc0, 0, 11, 8, 0x02, 0x58, 0x03, 0x20, 1, 0, 0, 0]);
+    expect(imageSize(jpeg)).toEqual({ width: 800, height: 600 });
+    const webp = new Uint8Array(40);
+    webp.set([82, 73, 70, 70, 0, 0, 0, 0, 87, 69, 66, 80, 86, 80, 56, 88], 0);
+    webp.set([0x1f, 0x03, 0x00], 24);
+    webp.set([0x57, 0x02, 0x00], 27);
+    expect(imageSize(webp)).toEqual({ width: 800, height: 600 });
+    expect(imageSize(new Uint8Array([1, 2, 3, 4]))).toBeNull();
   });
 });
 

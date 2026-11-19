@@ -158,12 +158,19 @@ export default function Generator() {
     if (!file) return;
     setNotice("");
     try {
+      if (file.size > 12_000_000) {
+        setNotice("That settings file is too large to be a ClearQR config.");
+        return;
+      }
       const res = parseConfig(JSON.parse(await file.text()));
       if (!res.ok) {
         setNotice(`That file is not a ClearQR config. ${res.errors.slice(0, 3).join(" ")}`);
         return;
       }
       const c = res.config;
+      if (c.type === "vcard" && ((c.content.phones?.length ?? 0) > 2 || (c.content.emails?.length ?? 0) > 2)) {
+        setNotice("This form shows two phone numbers and two emails. Extra ones in the file were left out, so check the code before you download it.");
+      }
       setType(c.type);
       setValuesByType((all) => ({ ...all, [c.type]: contentToForm(c.type, c.content as Record<string, unknown>) }));
       setStyle({
@@ -276,10 +283,10 @@ export default function Generator() {
               </ul>
             )}
             <div className="actions">
-              <button className="btn primary" disabled={!svg || busy} onClick={() => download("png")}>
+              <button className="btn primary" disabled={!svg || busy || status.state === "checking"} onClick={() => download("png")}>
                 Download PNG{status.state === "wont" ? " anyway" : ""}
               </button>
-              <button className="btn" disabled={!svg || busy} onClick={() => download("svg")}>
+              <button className="btn" disabled={!svg || busy || status.state === "checking"} onClick={() => download("svg")}>
                 Download SVG
               </button>
             </div>
@@ -369,7 +376,7 @@ export default function Generator() {
                   id="quiet"
                   type="range"
                   min={0}
-                  max={10}
+                  max={16}
                   value={style.quietZone}
                   onChange={(e) => setStyleField("quietZone", Number(e.target.value))}
                 />
@@ -398,7 +405,7 @@ export default function Generator() {
               <div className="field">
                 <label htmlFor="size">Download size</label>
                 <select id="size" value={style.size} onChange={(e) => setStyleField("size", Number(e.target.value))}>
-                  {[256, 512, 1024, 2048, 4096].map((s) => (
+                  {[...new Set([256, 512, 1024, 2048, 4096, style.size])].sort((a, b) => a - b).map((s) => (
                     <option key={s} value={s}>
                       {s} × {s} px
                     </option>
@@ -477,7 +484,7 @@ export default function Generator() {
         <div className="wrap">
           <p>
             ClearQR is free and open source under the MIT license. Built and maintained by{" "}
-            <a href="https://cscloud.digital">ClearSky Digital</a>.
+            <a href="https://cscloud.digital" rel="noopener noreferrer">ClearSky Digital</a>.
           </p>
         </div>
       </footer>

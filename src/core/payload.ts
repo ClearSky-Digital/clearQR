@@ -16,6 +16,35 @@ export function escapeWifi(s: string): string {
 
 const CRLF = "\r\n";
 
+/** Folds a vCard or iCalendar line at 75 octets, as RFC 6350 and RFC 5545 require. */
+export function foldLine(line: string): string {
+  const enc = new TextEncoder();
+  if (enc.encode(line).length <= 75) return line;
+  const out: string[] = [];
+  let cur = "";
+  let curBytes = 0;
+  let limit = 75;
+  for (const ch of line) {
+    const b = enc.encode(ch).length;
+    if (curBytes + b > limit) {
+      out.push(cur);
+      cur = "";
+      curBytes = 0;
+      limit = 74; // the leading space of a continuation line counts as one octet
+    }
+    cur += ch;
+    curBytes += b;
+  }
+  out.push(cur);
+  return out.join(CRLF + " ");
+}
+
+function stableId(s: string): string {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619) >>> 0;
+  return h.toString(16).padStart(8, "0");
+}
+
 function icsDate(v: string): string {
   // "2026-03-14" -> "20260314", "2026-03-14T09:30" -> "20260314T093000" (floating local time)
   const [d, t] = v.split("T");
@@ -90,7 +119,7 @@ export function buildPayload(config: Config): string {
       }
       if (c.note) lines.push(`NOTE:${escapeText(c.note)}`);
       lines.push("END:VCARD");
-      return lines.join(CRLF);
+      return lines.map(foldLine).join(CRLF);
     }
     case "event": {
       const c = config.content;
@@ -100,7 +129,10 @@ export function buildPayload(config: Config): string {
       const lines = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
+        "PRODID:-//ClearQR//EN",
         "BEGIN:VEVENT",
+        `UID:${stableId(c.title + c.start + (c.end ?? ""))}@clearqr`,
+        `DTSTAMP:${icsDate(c.start).slice(0, 8)}T000000Z`,
         `SUMMARY:${escapeText(c.title)}`,
         allDay ? `DTSTART;VALUE=DATE:${icsDate(c.start)}` : `DTSTART:${icsDate(c.start)}`,
         allDay ? `DTEND;VALUE=DATE:${icsDate(end)}` : `DTEND:${icsDate(end)}`,
@@ -108,7 +140,7 @@ export function buildPayload(config: Config): string {
       if (c.location) lines.push(`LOCATION:${escapeText(c.location)}`);
       if (c.description) lines.push(`DESCRIPTION:${escapeText(c.description)}`);
       lines.push("END:VEVENT", "END:VCALENDAR");
-      return lines.join(CRLF);
+      return lines.map(foldLine).join(CRLF);
     }
   }
 }

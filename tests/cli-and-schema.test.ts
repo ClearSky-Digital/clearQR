@@ -32,6 +32,18 @@ describe("command line", () => {
     expect(readFileSync(out, "utf8").startsWith("<svg")).toBe(true);
   });
 
+  it("refuses a config whose output file points outside the current folder", () => {
+    const cfg = join(tmp, "escape.json");
+    const target = join(root, "..", "clearqr-escape-test.png");
+    writeFileSync(cfg, JSON.stringify({ type: "link", content: { url: "https://example.com" }, output: { file: "../../../clearqr-escape-test.png" } }));
+    const r = run([cfg]);
+    expect(r.status).toBe(2);
+    expect(r.stderr).toContain("inside the current folder");
+    expect(existsSync(target)).toBe(false);
+    writeFileSync(cfg, JSON.stringify({ type: "link", content: { url: "https://example.com" }, output: { file: join(tmp, "abs.png") } }));
+    expect(run([cfg]).status).toBe(2);
+  });
+
   it("builds a logo example with its image file", () => {
     const r = run([example("logo"), "-o", join(tmp, "logo.png")]);
     expect(r.status, r.stderr).toBe(0);

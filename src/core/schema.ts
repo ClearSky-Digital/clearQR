@@ -13,6 +13,7 @@ const httpUrl = z
   .max(2000)
   .refine((v) => {
     try {
+      if (/[\s\u0000-\u001f\u007f]/.test(v) || !/^https?:\/\/[^/]/i.test(v)) return false;
       const u = new URL(v);
       return u.protocol === "http:" || u.protocol === "https:";
     } catch {
@@ -80,7 +81,14 @@ export const geoContent = z
 
 const dateTime = z
   .string()
-  .regex(/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/, "Use YYYY-MM-DD or YYYY-MM-DDTHH:MM");
+  .regex(/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/, "Use YYYY-MM-DD or YYYY-MM-DDTHH:MM")
+  .refine((v) => {
+    const [y, m, d] = v.slice(0, 10).split("-").map(Number);
+    const dt = new Date(Date.UTC(y, m - 1, d));
+    if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== m - 1 || dt.getUTCDate() !== d) return false;
+    if (v.length > 10) return Number(v.slice(11, 13)) <= 23 && Number(v.slice(14, 16)) <= 59;
+    return true;
+  }, "That date or time does not exist");
 
 export const eventContent = z
   .object({
@@ -179,7 +187,7 @@ export function parseConfig(input: unknown): ParseResult {
     const style = (raw as { style?: unknown }).style;
     if (style && typeof style === "object" && "preset" in style) {
       const name = (style as { preset?: unknown }).preset;
-      if (typeof name === "string" && name in PRESETS) {
+      if (typeof name === "string" && Object.hasOwn(PRESETS, name)) {
         const { label: _label, ...base } = PRESETS[name as keyof typeof PRESETS];
         raw = { ...(raw as object), style: { ...base, ...(style as object) } };
       }

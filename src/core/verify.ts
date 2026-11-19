@@ -21,6 +21,9 @@ export type VerifyResult =
  */
 export const CHECK_PX_PER_MODULE = [6, 8, 10];
 
+/** Below this many pixels per module in the downloaded file, a scanner cannot be expected to read it. */
+export const MIN_PX_PER_MODULE = 4;
+
 /**
  * Draws the code, reads it back the way a scanner would, at several sizes, and
  * compares what it read with the content the config asked for.
@@ -29,6 +32,20 @@ export async function verify(config: Config, rasterizer: Rasterizer): Promise<Ve
   const payload = buildPayload(config);
   const n = createMatrix(payload, effectiveEcc(config)).size;
   const total = n + 2 * config.style.quietZone;
+  if (config.style.quietZone < 2) {
+    return {
+      ok: false,
+      reason: "unreadable",
+      message: "The empty margin around the code is too small. Phone cameras need at least 2 modules; 4 is the standard.",
+    };
+  }
+  if (config.style.size / total < MIN_PX_PER_MODULE) {
+    return {
+      ok: false,
+      reason: "unreadable",
+      message: "At this download size each dot is only a few pixels wide, so the file may not scan. Pick a larger size or shorten the content.",
+    };
+  }
   for (const per of CHECK_PX_PER_MODULE) {
     const size = total * per;
     const px = await rasterizer.toPixels(renderSvg(config, { size }), size);
