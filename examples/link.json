@@ -1,0 +1,15 @@
+{
+  "$schema": "../schema/clearqr.schema.json",
+  "version": 1,
+  "type": "link",
+  "content": {
+    "url": "https://example.com/welcome"
+  },
+  "style": {
+    "preset": "sky"
+  },
+  "output": {
+    "format": "png",
+    "file": "link.png"
+  }
+}

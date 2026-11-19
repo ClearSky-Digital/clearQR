@@ -1,0 +1,42 @@
+{
+  "name": "clearqr",
+  "version": "0.1.0",
+  "description": "Free, private QR code generator. Everything runs in your browser or your terminal.",
+  "license": "MIT",
+  "author": "ClearSky Digital LLC (https://cscloud.digital)",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "clearqr": "dist/cli.mjs"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "build:cli": "tsup",
+    "schema": "tsx scripts/make-schema.ts",
+    "test": "vitest run",
+    "mutation-proof": "node scripts/mutation-proof.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "5.3.0",
+    "@fontsource-variable/oswald": "5.3.0",
+    "@napi-rs/canvas": "1.1.1",
+    "@zxing/library": "0.23.0",
+    "next": "16.4.6",
+    "qrcode": "1.5.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "24.0.0",
+    "@types/qrcode": "1.5.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "tsup": "9.0.0",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "5.1.1"
+  }
+}
+

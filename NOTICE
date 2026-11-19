@@ -1,0 +1,15 @@
+ClearQR uses these open source libraries. Each keeps its own license.
+
+Runtime (shipped in the app or needed by the command line tool)
+- qrcode 1.5.4 (MIT): builds the QR code module matrix
+- @zxing/library 0.23.0 (Apache-2.0): reads the finished code back to check that it scans
+- zod 4.6.7 (MIT): validates the config
+- next 16.4.6 (MIT) and react / react-dom 19.3.1 (MIT): the web app
+- @napi-rs/canvas 1.1.1 (MIT): turns SVG into PNG in the command line tool
+- @fontsource-variable/oswald 5.3.0 and @fontsource-variable/inter 5.3.0 (the packages are MIT; the Oswald and Inter fonts are SIL Open Font License 1.1): self-hosted fonts, so the page makes no requests to font servers
+
+Development only
+- typescript (Apache-2.0), vitest (MIT), tsup (MIT), tsx (MIT), @types packages (MIT)
+
+Apache-2.0 text: https://www.apache.org/licenses/LICENSE-2.0
+SIL OFL 1.1 text: https://openfontlicense.org

@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/clearqr.schema.json",
+  "version": 1,
+  "type": "link",
+  "content": {
+    "url": "https://example.com/photo"
+  },
+  "style": {
+    "dotColor": "#145F80",
+    "cornerColor": "#145F80",
+    "backgroundColor": "#FFFFFF",
+    "dotShape": "dot",
+    "cornerStyle": "rounded"
+  },
+  "image": {
+    "mode": "blend",
+    "src": "./assets/sample-photo.png",
+    "veil": 0.35
+  },
+  "output": {
+    "format": "png",
+    "file": "photo.png"
+  }
+}

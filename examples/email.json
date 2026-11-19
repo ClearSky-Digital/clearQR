@@ -1,0 +1,17 @@
+{
+  "$schema": "../schema/clearqr.schema.json",
+  "version": 1,
+  "type": "email",
+  "content": {
+    "to": "hello@example.com",
+    "subject": "Hello there",
+    "body": "Sent from a ClearQR code."
+  },
+  "style": {
+    "preset": "dots"
+  },
+  "output": {
+    "format": "png",
+    "file": "email.png"
+  }
+}
