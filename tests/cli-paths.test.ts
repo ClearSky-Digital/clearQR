@@ -1,10 +1,11 @@
-import { copyFileSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { MAX_IMAGE_FILE_BYTES, loadConfigFile } from "../src/node/files";
 import { root } from "./helpers";
 
-const dir = join(root, "tests", ".tmp", "paths");
+const dir = mkdtempSync(join(tmpdir(), "clearqr-paths-"));
 const sub = join(dir, "cfg");
 
 function write(name: string, image: unknown, folder = sub) {
@@ -14,8 +15,9 @@ function write(name: string, image: unknown, folder = sub) {
 }
 const errors = (r: ReturnType<typeof loadConfigFile>) => (r.ok ? "" : r.errors.join(" "));
 
+afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
 beforeAll(() => {
-  rmSync(dir, { recursive: true, force: true });
   mkdirSync(join(sub, "assets"), { recursive: true });
   copyFileSync(join(root, "examples", "assets", "sample-logo.png"), join(sub, "assets", "logo.png"));
   copyFileSync(join(root, "examples", "assets", "sample-logo.png"), join(dir, "outside.png"));
