@@ -1,10 +1,10 @@
 # ClearQR web app as a small static container.
 # Stage 1 builds the static export; stage 2 serves it with nginx (no Node at run time).
-# CLEARQR_BASE_PATH is the subpath the app lives under (default /clearQR); set it to "" for a site root.
+# CLEARQR_BASE_PATH is the subpath the app lives under (default /clearqr); set it to "" for a site root.
 
 FROM node:24-bookworm-slim AS build
 WORKDIR /app
-ARG CLEARQR_BASE_PATH=/clearQR
+ARG CLEARQR_BASE_PATH=/clearqr
 ENV CLEARQR_BASE_PATH=${CLEARQR_BASE_PATH} \
     NEXT_TELEMETRY_DISABLED=1
 COPY package.json package-lock.json ./
@@ -13,7 +13,7 @@ COPY . .
 RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:stable-alpine
-ARG CLEARQR_BASE_PATH=/clearQR
+ARG CLEARQR_BASE_PATH=/clearqr
 ARG CLEARQR_VERSION=dev
 ARG CLEARQR_REVISION=unknown
 ARG CLEARQR_CREATED=unknown

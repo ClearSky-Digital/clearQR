@@ -80,7 +80,16 @@ a {
   color: #ffffff;
   margin-bottom: 14px;
 }
-.brand span {
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand .logo {
+  flex: none;
+  display: block;
+}
+.brand-name span {
   color: var(--orange);
 }
 .top h1 {

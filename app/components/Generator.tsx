@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Logo } from "./Logo";
 import {
   PRESETS,
   QR_TYPES,
@@ -199,7 +200,10 @@ export default function Generator() {
       <header className="top">
         <div className="wrap top-inner">
           <p className="brand">
-            Clear<span>QR</span>
+            <Logo size={30} />
+            <span className="brand-name">
+              Clear<span>QR</span>
+            </span>
           </p>
           <h1>Free QR codes. Made on your device.</h1>
           <p className="lead">

@@ -66,22 +66,22 @@ Hosts that cannot set headers (GitHub Pages is one) still serve a working app wi
 
 ## Docker
 
-Each release is published as the image `ghcr.io/clearsky-digital/clearqr`, tagged with its version and `latest`. It serves the app under `/clearQR/` with the headers above. The container has no Node at run time, runs as a non-root user, and listens on port 8080.
+Each release is published as the image `ghcr.io/clearsky-digital/clearqr`, tagged with its version and `latest`. It serves the app under `/clearqr/` with the headers above. The container has no Node at run time, runs as a non-root user, and listens on port 8080.
 
 To try it on your own computer:
 
 ```
-docker run --rm -p 8088:8080 ghcr.io/clearsky-digital/clearqr:1.0.0
+docker run --rm -p 8088:8080 ghcr.io/clearsky-digital/clearqr:1.0.2
 ```
 
-The app is then at `http://localhost:8088/clearQR/`.
+The app is then at `http://localhost:8088/clearqr/`.
 
 On a server behind a reverse proxy, use `docker-compose.yml`. It pulls the release image and publishes no host port. Instead it joins the proxy's existing Docker network, and the proxy forwards to `clearqr:8080` with the subpath unchanged. Two settings:
 
-- `CLEARQR_TAG`: the release to run (default `1.0.0`).
+- `CLEARQR_TAG`: the release to run (default `1.0.2`).
 - `PROXY_NETWORK`: the name of the proxy's external network (default `publictools`).
 
-With Nginx Proxy Manager, add a custom location `/clearQR` on the host, with scheme `http`, forward hostname `clearqr` and port `8080`.
+With Nginx Proxy Manager, add a custom location `/clearqr` on the host, with scheme `http`, forward hostname `clearqr` and port `8080`. The container redirects the subpath in any other capitalization (such as `/ClearQR/`) to `/clearqr/`, but the proxy's own locations match case exactly, so add a second custom location for any capitalized form you expect people to type, such as `/clearQR`, with the same settings.
 
 To serve the app under another subpath, build your own image. The subpath is fixed into the pages at build time:
 
