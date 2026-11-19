@@ -124,6 +124,20 @@ export const styleSchema = z
 export const IMAGE_DATA_URI = /^data:image\/(png|jpeg|webp|gif|svg\+xml);base64,[A-Za-z0-9+/=]+$/;
 export const MAX_IMAGE_CHARS = 8_000_000;
 
+/** True when a png, jpeg, webp or gif data: URI actually holds text that starts with "<" (SVG or XML in disguise). */
+export function looksLikeMarkup(src: string): boolean {
+  const m = /^data:image\/(png|jpeg|webp|gif);base64,([A-Za-z0-9+/=]*)$/.exec(src);
+  if (!m) return false;
+  let head = "";
+  try {
+    head = atob(m[2].slice(0, 32));
+  } catch {
+    return false;
+  }
+  // Skip leading white space and a UTF-8 byte order mark.
+  return head.replace(/^(\xEF\xBB\xBF|\s)+/, "").startsWith("<");
+}
+
 export const imageSchema = z
   .object({
     mode: z.enum(["none", "logo", "blend"]).default("none"),
@@ -194,7 +208,13 @@ export function parseConfig(input: unknown): ParseResult {
     }
   }
   const r = configSchema.safeParse(raw);
-  if (r.success) return { ok: true, config: r.data };
+  if (r.success) {
+    const src = r.data.image.src;
+    if (src && looksLikeMarkup(src)) {
+      return { ok: false, errors: ["image.src: This image says it is a bitmap, but its content is markup (such as SVG). Use a real png, jpeg, webp or gif."] };
+    }
+    return { ok: true, config: r.data };
+  }
   return {
     ok: false,
     errors: r.error.issues.map((i) => `${i.path.length ? i.path.join(".") : "config"}: ${i.message}`),

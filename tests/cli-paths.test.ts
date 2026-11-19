@@ -1,9 +1,10 @@
 import { spawnSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { parseConfig } from "../src/core/schema";
 import { MAX_IMAGE_FILE_BYTES, loadConfigFile } from "../src/node/files";
 import { root } from "./helpers";
 
@@ -102,5 +103,26 @@ describe("command line output and option checks", () => {
       expect(r.stderr).toContain("needs a value");
     }
     expect(existsSync(join(work, "a.png"))).toBe(false);
+  });
+});
+
+describe("images that say bitmap but hold markup", () => {
+  const b64 = (s: string) => Buffer.from(s).toString("base64");
+  const cfg = (src: string) => ({ type: "link", content: { url: "https://example.com" }, image: { mode: "logo", src } });
+
+  it("refuses png, jpeg, webp and gif data URIs whose bytes start with <", () => {
+    for (const mime of ["png", "jpeg", "webp", "gif"]) {
+      for (const body of ['<svg xmlns="http://www.w3.org/2000/svg"/>', '<?xml version="1.0"?><svg/>', '  \n<svg/>', "\uFEFF<svg/>"]) {
+        const r = parseConfig(cfg(`data:image/${mime};base64,${b64(body)}`));
+        expect(r.ok, `${mime} ${JSON.stringify(body)}`).toBe(false);
+        if (!r.ok) expect(r.errors.join(" ")).toContain("markup");
+      }
+    }
+  });
+
+  it("accepts a real png data URI and a declared svg is left to the other rule", () => {
+    const real = readFileSync(join(root, "examples", "assets", "sample-logo.png")).toString("base64");
+    expect(parseConfig(cfg(`data:image/png;base64,${real}`)).ok).toBe(true);
+    expect(parseConfig(cfg(`data:image/svg+xml;base64,${b64("<svg/>")}`)).ok).toBe(true);
   });
 });
