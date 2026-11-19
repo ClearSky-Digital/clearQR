@@ -82,7 +82,7 @@ export function landsInside(base: string, target: string): boolean {
   return !(rel === ".." || rel.startsWith(".." + sep) || isAbsolute(rel));
 }
 
-const RESERVED = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i;
+const RESERVED = /^(con|prn|aux|nul|com[0-9¹²³]|lpt[0-9¹²³]|conin\$|conout\$)$/i;
 
 /**
  * Why a file name from a config is not allowed as an output path, or null if it is fine.
@@ -91,7 +91,7 @@ const RESERVED = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i;
  */
 export function outputNameProblem(path: string): string | null {
   if (path.includes(":")) return "The output file name cannot contain a colon.";
-  for (const part of path.split(/[\/]+/)) {
+  for (const part of path.split(/[\\/]+/)) {
     if (RESERVED.test(part.split(".")[0].trimEnd())) return `"${part}" is a reserved Windows device name.`;
     if (/[. ]$/.test(part) && part !== "." && part !== "..") return "The output file name cannot end in a dot or a space.";
   }

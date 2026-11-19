@@ -136,7 +136,7 @@ describe("output file names from a config", () => {
   it("refuses a colon and Windows device names, and still allows -o and ordinary names", () => {
     const work = join(dir, "names");
     mkdirSync(work, { recursive: true });
-    for (const file of ["ok.png:stream", "nul.png", "CON", "sub/aux.svg", "com1.txt.png", "name.png.", "name.png "]) {
+    for (const file of ["ok.png:stream", "nul.png", "CON", "sub/aux.svg", "sub\\nul.png", "a\\\\prn.png", "COM¹.png", "CONOUT$", "com1.txt.png", "name.png.", "name.png "]) {
       writeFileSync(join(work, "c.json"), JSON.stringify({ type: "link", content: { url: "https://example.com" }, output: { file } }));
       const r = run(work, ["c.json"]);
       expect(r.status, file).toBe(2);

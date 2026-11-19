@@ -77,7 +77,7 @@ async function main(): Promise<number> {
       return 2;
     }
   }
-  const out =resolve(args.out ?? config.output.file ?? `clearqr.${format}`);
+  const out = resolve(args.out ?? config.output.file ?? `clearqr.${format}`);
   const svg = renderSvg(config);
   mkdirSync(dirname(out), { recursive: true });
   if (format === "svg") writeFileSync(out, svg);
