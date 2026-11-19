@@ -24,7 +24,7 @@ npm run dev      # development
 npm run build    # static site in out/
 ```
 
-Host the `out/` folder anywhere that serves static files.
+Host the `out/` folder anywhere that serves static files. To serve it from a subpath such as `https://example.com/qr/`, build with `CLEARQR_BASE_PATH=/qr npm run build` (leave it unset for a site root).
 
 ## Command line
 
@@ -37,7 +37,7 @@ Options: `-o <file>`, `--format png|svg`, `--no-verify`. Exit codes: 0 written a
 
 ## Config
 
-One JSON file describes a code: `type`, `content`, `style`, `image` and `output`. The schema is in `schema/clearqr.schema.json`, and `examples/` has one file per type using made-up data. The web app saves and loads the same format.
+One JSON file describes a code: `type`, `content`, `style`, `image` and `output`. The schema is in `schema/clearqr.schema.json`, and `examples/` has one file per type using made-up data. The web app saves and loads the same format. On the command line, an image path in a config must point inside the config file's own folder, and logos must be png, jpg, webp or gif.
 
 ```json
 {
@@ -65,4 +65,5 @@ The tests cover an encode and decode round trip for every type, config validatio
 ## License
 
 MIT. See `LICENSE` and `NOTICE`.
+
 
