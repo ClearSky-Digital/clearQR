@@ -23,6 +23,25 @@ describe("guide, paths and tip card", () => {
     expect(html).toContain('href="https://cscloud.digital/start/?utm_source=clearqr&amp;utm_medium=app&amp;utm_campaign=setup-help"');
     expect(text(html)).not.toMatch(/\$\s?\d|\bUSD\b|per month|\/mo\b|\bprice\b|\bfee\b/i);
   });
+  it("the tip button opens in a new tab and says so", () => {
+    const tip = renderToStaticMarkup(createElement(TipCard, { href: "https://buy.stripe.com/x" }));
+    expect(tip).toMatch(/<a [^>]*target="_blank"[^>]*rel="noopener noreferrer"|<a [^>]*rel="noopener noreferrer"[^>]*target="_blank"/);
+    expect(tip).toContain("(opens in a new tab)");
+  });
+  it("the footer tip link opens in a new tab and says so", () => {
+    const src = readFileSync(join(root, "app", "components", "Generator.tsx"), "utf8");
+    const m = src.match(/<a href=\{tipLink\(\) as string\}[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
+    expect(m).toContain('target="_blank"');
+    expect(m).toContain('rel="noopener noreferrer"');
+    expect(m).toContain("(opens in a new tab)");
+  });
+  it("the setup help link opens in a new tab and says so", () => {
+    const guide = renderToStaticMarkup(createElement(Guide));
+    const a = guide.match(/<a [^>]*href="https:\/\/cscloud\.digital\/start\/[^"]*"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
+    expect(a).toContain('target="_blank"');
+    expect(a).toContain('rel="noopener noreferrer"');
+    expect(a).toContain("(opens in a new tab)");
+  });
   it("hides the tip card without a link, and shows it with one", () => {
     expect(renderToStaticMarkup(createElement(TipCard, { href: null }))).toBe("");
     const html = renderToStaticMarkup(createElement(TipCard, { href: "https://buy.stripe.com/x?utm_campaign=tip" }));

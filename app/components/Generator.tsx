@@ -540,8 +540,9 @@ export default function Generator() {
             {tipLink() && (
               <>
                 {" "}
-                <a href={tipLink() as string} rel="noopener noreferrer">
+                <a href={tipLink() as string} target="_blank" rel="noopener noreferrer">
                   {TIP.footer}
+                  <span className="sr-only"> (opens in a new tab)</span>
                 </a>
                 .
               </>

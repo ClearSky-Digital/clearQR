@@ -7,8 +7,9 @@ export function TipCard({ href = tipLink() }: { href?: string | null }) {
     <section className="card tip" aria-labelledby="h-tip">
       <h2 id="h-tip">{TIP.title}</h2>
       <p>{TIP.text}</p>
-      <a className="btn primary" href={href} rel="noopener noreferrer">
+      <a className="btn primary" href={href} target="_blank" rel="noopener noreferrer">
         {TIP.button}
+        <span className="sr-only"> (opens in a new tab)</span>
       </a>
     </section>
   );
@@ -58,8 +59,9 @@ export function Guide({ setup = setupLink() }: { setup?: string }) {
           <div>
             <h4>{PATHS.helpTitle}</h4>
             <p>{PATHS.help}</p>
-            <a className="btn" href={setup} rel="noopener noreferrer">
+            <a className="btn" href={setup} target="_blank" rel="noopener noreferrer">
               {PATHS.helpLink}
+              <span className="sr-only"> (opens in a new tab)</span>
             </a>
           </div>
         </div>
