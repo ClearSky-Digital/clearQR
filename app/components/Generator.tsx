@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Logo } from "./Logo";
-import { Guide, HeroActions, Pitch, TipCard } from "./Guide";
+import { Guide, HeroActions, Pitch, TagsCallout, TipCard } from "./Guide";
 import { tipLink } from "../lib/site";
 import { TIP } from "../lib/copy";
 import {
@@ -264,6 +264,7 @@ export default function Generator() {
                 <p className="fine">
                   Tags let your own website analytics tell which printed piece brought each visit. See the guide below.
                 </p>
+                <TagsCallout />
                 <div className="chips" role="group" aria-label="Campaign presets">
                   {CAMPAIGN_PRESETS.map((p) => (
                     <button

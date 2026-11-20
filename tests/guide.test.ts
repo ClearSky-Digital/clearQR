@@ -4,12 +4,13 @@ import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import Generator from "../app/components/Generator";
-import { Guide, GUIDE_ID, HeroActions, Pitch, TipCard, openGuide } from "../app/components/Guide";
-import { COMPARISON, GUIDE, PATHS, PITCH, TIP } from "../app/lib/copy";
+import { Guide, GUIDE_ID, HeroActions, Pitch, TagsCallout, TipCard, openGuide } from "../app/components/Guide";
+import { CALLOUT, COMPARISON, GUIDE, PATHS, PITCH, TIP } from "../app/lib/copy";
+import { GUIDE_PAGES, guideLink } from "../app/lib/site";
 import { root } from "./helpers";
 
 const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
-const allCopy = () => JSON.stringify([GUIDE, PATHS, TIP]);
+const allCopy = () => JSON.stringify([GUIDE, PATHS, TIP, CALLOUT]);
 
 describe("guide, paths and tip card", () => {
   it("shows the guide and both paths, with the setup link tagged and no price", () => {
@@ -129,6 +130,55 @@ describe("guide, paths and tip card", () => {
     expect(words).not.toMatch(/[–—]| - /);
     expect(words).toContain("ClearQR tracks nothing, and your own analytics does the counting");
     expect(renderToStaticMarkup(createElement(Guide))).toContain("Why we made ClearQR free");
+  });
+});
+
+describe("guide steps, full-guide links and the tags callout", () => {
+  it("has complete steps for counting visits and for a changeable code", () => {
+    const html = renderToStaticMarkup(createElement(Guide));
+    for (const [t] of [...GUIDE.steps, ...GUIDE.changeableSteps]) expect(html).toContain(`<h4>${t}</h4>`);
+    expect(html).toMatch(/Session campaign/);
+    expect(html).toMatch(/302/);
+    expect(html.match(/<ol class="steps" role="list">/g)?.length).toBe(2);
+    expect(html.match(/<li>\s*<span class="step-n"/g)?.length).toBe(6);
+    expect(GUIDE.steps.length).toBe(3);
+    expect(GUIDE.changeableSteps.length).toBe(3);
+  });
+  it("says visits, not scans, where the reader's analytics is meant, and keeps ClearQR out of the counting", () => {
+    expect(GUIDE.steps[2][1]).toMatch(/visits/);
+    expect(GUIDE.steps[2][1]).not.toMatch(/scans?/);
+    expect(JSON.stringify(GUIDE)).not.toMatch(/ClearQR (counts|tracks|hosts)(?! nothing)/);
+  });
+  it("hides the full-guide links until the guide site is set, then shows them in a new tab", () => {
+    expect(guideLink(GUIDE_PAGES.count, "")).toBeNull();
+    expect(guideLink(GUIDE_PAGES.count, undefined)).toBeNull();
+    expect(guideLink(GUIDE_PAGES.count, "http://clearqr.app")).toBeNull();
+    expect(guideLink(GUIDE_PAGES.count, "https://u:p@clearqr.app")).toBeNull();
+    expect(guideLink(GUIDE_PAGES.count, "https://clearqr.app")).toBe(
+      "https://clearqr.app/count-your-scans/?utm_source=clearqr&utm_medium=app&utm_campaign=guide",
+    );
+    expect(guideLink(GUIDE_PAGES.change, "https://example.org/guides/?x=1#y")).toBe(
+      "https://example.org/guides/changeable-code/?utm_source=clearqr&utm_medium=app&utm_campaign=guide",
+    );
+    expect(guideLink(GUIDE_PAGES.count, "https://clearqr.app//")).toBe(
+      "https://clearqr.app/count-your-scans/?utm_source=clearqr&utm_medium=app&utm_campaign=guide",
+    );
+    expect(renderToStaticMarkup(createElement(Guide))).not.toContain(GUIDE.fullGuide);
+    const html = renderToStaticMarkup(createElement(Guide, { countHref: "https://clearqr.app/count-your-scans/", changeHref: "https://clearqr.app/changeable-code/" }));
+    expect(html.split(GUIDE.fullGuide).length - 1).toBe(2);
+    expect(html).toContain('href="https://clearqr.app/count-your-scans/"');
+    expect(html).toMatch(/Full step-by-step guide<span class="sr-only"> to changeable codes \(opens in a new tab\)/);
+  });
+  it("the tags callout offers two one-line choices: the guide, and the setup form in a new tab", () => {
+    const html = renderToStaticMarkup(createElement(TagsCallout));
+    expect(html).toContain(CALLOUT.diy);
+    expect(html).toContain(CALLOUT.help);
+    expect(html).toContain('href="#h-guide"');
+    expect(html).toMatch(/href="https:\/\/cscloud\.digital\/free-qr-code-generator\/\?utm_source=clearqr[^"]*#setup-help"[^>]*target="_blank"/);
+    expect(html.match(/<svg[^>]*aria-hidden="true"/g)?.length).toBe(2);
+    for (const w of [CALLOUT.diyNote, CALLOUT.helpNote]) expect((CALLOUT.diy + CALLOUT.help + w).length).toBeLessThan(80);
+    const page = renderToStaticMarkup(createElement(Generator));
+    expect(page).toContain(CALLOUT.diy);
   });
 });
 

@@ -4,8 +4,9 @@
  */
 export const GUIDE = {
   title: "Count your scans",
+  hint: "Campaign tags, Google Analytics, and codes you can change later",
   intro:
-    "Add campaign tags to a link code, and your own website analytics can tell you which flyer, card, or truck brought each visit. ClearQR adds the tags to the web address before the code is made. ClearQR itself counts nothing and collects nothing.",
+    "Add campaign tags to a link code, and your own website analytics can show which flyer, card, or truck brought each visit. ClearQR adds the tags to the web address before the code is made. ClearQR itself counts nothing and collects nothing.",
   tagsTitle: "What the tags mean",
   tags: [
     ["Source", "where the code lives, like flyer."],
@@ -13,21 +14,35 @@ export const GUIDE = {
     ["Campaign", "a name you choose, like spring-sale."],
     ["Content", "optional, for telling two versions apart."],
   ] as [string, string][],
-  analyticsTitle: "See the scans in Google Analytics",
-  analytics: [
-    "Open Reports, then Acquisition, then Traffic acquisition. Use the plus sign beside the first column heading and choose Session campaign, and your campaign names show up with their visits. Menu names can shift a little over time.",
-    "To see results that matter to the business, mark an action as a key event (in Admin, open Events and switch on Mark as key event), such as a form sent or a call tapped. Then you can compare visits with the leads they produced for each printed piece.",
-  ],
+  stepsTitle: "Three steps",
+  steps: [
+    ["Name each piece", "Open Campaign tags under the link field. Pick a preset such as Flyer, or type your own source and medium. Add a campaign name, then check the address shown for your code."],
+    ["Print and scan", "Scan every printed code with your phone and confirm the tagged address opens. Write down which code goes on which piece."],
+    ["Read the visits", "In Google Analytics, open Reports, then Acquisition, then Traffic acquisition. Use the plus sign beside the first column heading and choose Session campaign. Each campaign name shows its visits. Menu names can shift a little over time."],
+  ] as [string, string][],
+  keyTitle: "Count what matters",
+  key: "To see results that matter to the business, mark an action as a key event (in Admin, open Events and switch on Mark as key event), such as a form sent or a call tapped. Then you can compare visits with the leads they produced for each printed piece.",
   limitsTitle: "Reading your numbers",
   limits:
     "The numbers are visits to your page. Ad blockers and cookie banners hide some visits, so treat the counts as a minimum. Test the final address in a private window before you print.",
+  fullGuide: "Full step-by-step guide",
+  fullGuideCount: "to counting your visits",
+  fullGuideChange: "to changeable codes",
   changeableTitle: "Make a printed code changeable, on your own",
+  changeableIntro: "A printed code is fixed, but a short address on your own domain can be pointed at a new page any time.",
+  changeableSteps: [
+    ["Pick a short address", "Choose something like yoursite.com/qr/flyer, enter it as the link in ClearQR, and print that code. You own the domain, so the code keeps working as long as you keep the domain and the redirect."],
+    ["Forward it", "Set up a temporary redirect (called a 302) from that short address to the page you want. Use a rule in Cloudflare, a plugin in WordPress, or the redirect setting at your web host."],
+    ["Change it later", "To send people somewhere new, edit the redirect, and the printed code stays the same. We host nothing and keep no list of your codes."],
+  ] as [string, string][],
   changeableCta: "Want this done for you? Fill in the short setup-help form and we will set it up.",
-  changeable: [
-    "A printed code is fixed, and a short address on your own domain is flexible. Make the code point to yoursite.com/qr/flyer. Then send that address wherever you like, today and later. You own the domain, so the code keeps working as long as you keep the domain.",
-    "Three free ways to forward it: a redirect rule in Cloudflare, a redirect plugin in WordPress, or the redirect setting at your web host. Use a temporary redirect (called a 302), so browsers keep checking your short address.",
-    "We host nothing and keep no list of your codes.",
-  ],
+} as const;
+
+export const CALLOUT = {
+  diy: "Do it yourself",
+  diyNote: "see the steps",
+  help: "We set it up",
+  helpNote: "ask for help",
 } as const;
 
 export const PITCH = {

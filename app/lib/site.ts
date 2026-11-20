@@ -32,3 +32,24 @@ export function setupLink(raw: string | undefined | null = process.env.NEXT_PUBL
   const url = cleanHttpsUrl(raw) ?? DEFAULT_CONTACT_URL;
   return addCampaignTags(url, { ...OUR_TAGS, campaign: "setup-help" });
 }
+
+/** Where the full guides live. The page names are fixed here; the site's address is set at build time. */
+export const GUIDE_PAGES = { count: "count-your-scans/", change: "changeable-code/" } as const;
+
+/** A link to one full guide on the guide site, or null so the link stays hidden until the site is set. */
+export function guideLink(
+  page: string,
+  raw: string | undefined | null = process.env.NEXT_PUBLIC_CLEARQR_GUIDES_URL,
+): string | null {
+  const base = cleanHttpsUrl(raw);
+  if (!base) return null;
+  try {
+    const u = new URL(base);
+    u.pathname = u.pathname.replace(/\/+$/, "") + "/";
+    u.search = "";
+    u.hash = "";
+    return addCampaignTags(new URL(page, u).toString(), { ...OUR_TAGS, campaign: "guide" });
+  } catch {
+    return null;
+  }
+}
