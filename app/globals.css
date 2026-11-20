@@ -1177,9 +1177,6 @@ a {
   margin-top: 16px;
   margin-bottom: 8px;
 }
-.more-guides a {
-  margin-left: 8px;
-}
 .close-band {
   background: var(--dark);
   color: var(--on-dark);

@@ -87,10 +87,11 @@ export function HomePage() {
         {more.length > 0 && (
           <p className="wrap more-guides">
             {CLOSE.more}{" "}
-            {more.map((g) => (
-              <a key={g.slug} href={at(`/${g.slug}/`)}>
-                {g.nav}
-              </a>
+            {more.map((g, i) => (
+              <span key={g.slug}>
+                {i > 0 && " · "}
+                <a href={at(`/${g.slug}/`)}>{g.nav}</a>
+              </span>
             ))}
           </p>
         )}
