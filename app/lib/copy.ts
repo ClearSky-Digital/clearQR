@@ -47,7 +47,7 @@ export const CALLOUT = {
 
 export const PITCH = {
   headline: "Trackable and changeable QR codes, free.",
-  text: "Many tools charge a subscription for trackable, changeable codes. With ClearQR you get both without a subscription, using tools you already have. Add campaign tags, and your own analytics counts the scans. Point the code at a short address on your own domain, and you can change where it goes later.",
+  text: "Many tools charge a subscription for trackable, changeable codes. With ClearQR you get both without a subscription, using tools you already have. Add campaign tags, and your own analytics counts the visits each code brings. Point the code at a short address on your own domain, and you can change where it goes later.",
   how: "How to set it up",
   help: "Get help setting it up",
 } as const;

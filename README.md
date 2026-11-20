@@ -142,3 +142,7 @@ The tests cover an encode and decode round trip for every type, config validatio
 MIT. See `LICENSE` and `NOTICE`.
 
 
+
+### Moving the app to a new address
+
+Set `CLEARQR_REDIRECT_TO` (a plain https address) when you build the image to get a redirect-only container: every request gets a permanent (301) redirect to the same path on the new address, and the old subpath (`/clearqr`) is dropped. For example `--build-arg CLEARQR_REDIRECT_TO=https://example.org` sends `/clearqr/guide/?a=1` to `https://example.org/guide/?a=1`. The container also answers `/healthz` with 200 so a health check does not follow the redirect.

@@ -22,6 +22,8 @@ RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:stable-alpine
 ARG CLEARQR_BASE_PATH=/clearqr
+# Redirect-only mode: set to the new site address (https only) and this image answers every path with a 301 to it.
+ARG CLEARQR_REDIRECT_TO=
 ARG CLEARQR_VERSION=dev
 ARG CLEARQR_REVISION=unknown
 ARG CLEARQR_CREATED=unknown
@@ -35,14 +37,12 @@ LABEL org.opencontainers.image.title="ClearQR" \
       org.opencontainers.image.url="https://cscloud.digital" \
       org.opencontainers.image.vendor="ClearSky Digital LLC"
 USER root
-COPY deploy/nginx.conf /tmp/clearqr.conf
+COPY deploy/nginx.conf deploy/nginx-redirect.conf /tmp/
 # The base path is fixed at build time, like the pages themselves.
-RUN sed "s#__BASE__#${CLEARQR_BASE_PATH}#g" /tmp/clearqr.conf > /etc/nginx/conf.d/default.conf \
- && if [ -z "${CLEARQR_BASE_PATH}" ]; then sed -i '/# subpath-start/,/# subpath-end/d' /etc/nginx/conf.d/default.conf; fi \
- && rm /tmp/clearqr.conf /usr/share/nginx/html/index.html /usr/share/nginx/html/50x.html
+RUN if [ -n "${CLEARQR_REDIRECT_TO}" ]; then       T="${CLEARQR_REDIRECT_TO%/}";       printf '%s' "$T" | grep -Eq '^https://[A-Za-z0-9.-]+(:[0-9]+)?(/[A-Za-z0-9._~/-]*)?$' || { echo "CLEARQR_REDIRECT_TO must be a plain https address"; exit 1; };       sed -e "s#__TARGET__#$T#g" -e "s#__BASE__#${CLEARQR_BASE_PATH}#g" /tmp/nginx-redirect.conf > /etc/nginx/conf.d/default.conf;     else       sed "s#__BASE__#${CLEARQR_BASE_PATH}#g" /tmp/nginx.conf > /etc/nginx/conf.d/default.conf;     fi  && if [ -z "${CLEARQR_BASE_PATH}" ]; then sed -i '/# subpath-start/,/# subpath-end/d' /etc/nginx/conf.d/default.conf; fi  && rm /tmp/nginx.conf /tmp/nginx-redirect.conf /usr/share/nginx/html/index.html /usr/share/nginx/html/50x.html
 COPY --from=build /app/out /usr/share/nginx/html${CLEARQR_BASE_PATH}
 USER 101
 ENV CLEARQR_BASE_PATH=${CLEARQR_BASE_PATH}
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD wget -q -O /dev/null "http://127.0.0.1:8080${CLEARQR_BASE_PATH}/" || exit 1
+  CMD wget -q -O /dev/null "http://127.0.0.1:8080/healthz" || exit 1
