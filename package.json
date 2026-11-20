@@ -11,12 +11,14 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/check-placeholders.mjs",
     "build:cli": "tsup",
     "schema": "tsx scripts/make-schema.ts",
     "icons": "tsx scripts/make-icons.ts",
     "test": "vitest run",
-    "mutation-proof": "node scripts/mutation-proof.mjs"
+    "mutation-proof": "node scripts/mutation-proof.mjs",
+    "check:balance": "node scripts/run-check.mjs scripts/balance-check.mjs",
+    "check:contrast": "node scripts/run-check.mjs scripts/contrast.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",
@@ -34,10 +36,11 @@
     "@types/qrcode": "1.5.6",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "playwright-core": "1.64.1",
+    "sharp": "0.35.5",
     "tsup": "9.0.0",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "vitest": "5.1.1"
   }
 }
-

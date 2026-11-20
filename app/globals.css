@@ -200,12 +200,25 @@ a {
   gap: 8px;
   margin-bottom: 18px;
 }
-@media (min-width: 560px) {
-  .types {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+.types {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+/* Nine types divide into three even columns at every width; on a phone the short blurb is kept for screen readers only. */
+@media (max-width: 559px) {
+  .type-btn {
+    padding: 10px 8px;
+  }
+  .type-blurb {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 .type-btn {
+  position: relative;
   text-align: left;
   font: inherit;
   color: var(--ink);
@@ -841,4 +854,86 @@ a {
 }
 .paths .partner {
   margin-top: 20px;
+}
+
+/* Guide pages: the slim bar, the hero picture, the body */
+.site-bar {
+  background: var(--dark);
+  color: var(--on-dark);
+  border-bottom: 1px solid #343a46;
+}
+.site-bar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 20px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.site-brand {
+  margin: 0;
+  text-decoration: none;
+}
+.site-bar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+}
+.site-bar nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--on-dark);
+  text-decoration: none;
+}
+.site-bar nav a:hover {
+  text-decoration: underline;
+}
+.site-bar :focus-visible {
+  outline-color: #ffffff;
+}
+.guide-hero .hero-art {
+  display: none;
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  margin-left: auto;
+}
+.guide-main {
+  padding-top: 24px;
+  padding-bottom: 40px;
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 1100px) {
+  .guide-hero .top-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  .guide-hero .hero-art {
+    display: block;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-art .art-row {
+    animation: art-in 0.7s ease both;
+  }
+  .hero-art .art-row-1 {
+    animation-delay: 0.15s;
+  }
+  .hero-art .art-row-2 {
+    animation-delay: 0.3s;
+  }
+}
+@keyframes art-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

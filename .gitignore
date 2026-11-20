@@ -9,3 +9,4 @@ tests/.tmp/
 .next/
 next-env.d.ts
 *.tsbuildinfo
+evidence/
