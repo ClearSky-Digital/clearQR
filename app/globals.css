@@ -1230,3 +1230,337 @@ a {
     transform: scaleY(1);
   }
 }
+
+/* Guide page bodies */
+.guide-main section.card h2 {
+  display: block;
+}
+.pair,
+.triple {
+  display: grid;
+  gap: 16px;
+  margin: 14px 0;
+}
+.pair-box {
+  background: var(--page);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+  min-width: 0;
+}
+.pair-box h3 {
+  font-size: 1.05rem;
+  color: var(--dark);
+  margin: 0 0 8px;
+}
+.pair-box p {
+  margin: 0 0 10px;
+}
+.pair-box p:last-child {
+  margin-bottom: 0;
+}
+@media (min-width: 900px) {
+  .pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+  .triple {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+  }
+  .pair .pair-box h3,
+  .triple .pair-box h3 {
+    min-height: 3.2em;
+  }
+}
+.checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  align-content: center;
+}
+.checklist li {
+  padding-left: 18px;
+  border-left: 4px solid var(--orange);
+}
+.q-grid {
+  display: grid;
+  gap: 14px;
+  margin: 12px 0;
+}
+@media (min-width: 900px) {
+  .q-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .q-grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+.q {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 0;
+  min-width: 0;
+}
+.q legend {
+  font-weight: 600;
+  padding: 0 6px;
+}
+.q-choices {
+  display: grid;
+  gap: 6px;
+}
+.q-choices label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.q-choices label.on {
+  background: var(--page);
+}
+.verdict {
+  border-radius: 10px;
+  padding: 14px 16px;
+  background: var(--page);
+  border: 1px solid var(--line);
+  margin: 10px 0 18px;
+}
+.verdict h3 {
+  margin: 0 0 6px;
+  color: var(--dark);
+}
+.verdict ul {
+  margin: 6px 0 8px;
+  padding-left: 20px;
+}
+.verdict-ok {
+  background: var(--ok-bg);
+  color: var(--ok-ink);
+}
+.verdict-watch,
+.verdict-fix {
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+}
+.verdict .fine {
+  color: inherit;
+}
+.verdict-table h3 {
+  margin: 8px 0 4px;
+  font-size: 1.05rem;
+}
+.table-scroll {
+  position: relative;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+.table-scroll table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 560px;
+}
+.table-scroll th,
+.table-scroll td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.table-scroll thead th {
+  background: var(--page);
+  color: var(--dark);
+}
+.table-scroll tbody th {
+  font-weight: 600;
+}
+.table-scroll caption {
+  caption-side: top;
+  text-align: left;
+  padding: 10px 12px;
+  color: var(--ink-soft);
+}
+.pair-art {
+  align-items: center;
+}
+.svd-art {
+  background: var(--card);
+  border: 1px solid var(--line);
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 14px;
+}
+.twin-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 14px;
+  align-content: center;
+}
+.twin-list li {
+  background: var(--page);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--orange);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+@media (min-width: 900px) {
+  .pair.pair-art {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+}
+.inline-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+.guide-main .table-scroll {
+  margin: 16px 0 0;
+}
+.stack {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  min-width: 0;
+}
+.steps {
+  margin: 0 0 12px;
+  padding-left: 22px;
+  display: grid;
+  gap: 8px;
+}
+.guide-main code,
+.pair-box code {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9rem;
+  background: var(--card);
+  padding: 1px 5px;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+.dev-rows ul {
+  margin: 0 0 12px;
+  padding-left: 22px;
+}
+.steps-label {
+  font-weight: 600;
+  color: var(--blue-deep);
+  margin: 0 0 10px;
+}
+.parts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 14px;
+  margin: 0 0 12px;
+}
+.parts dt {
+  font-weight: 600;
+}
+.parts dd {
+  margin: 0;
+}
+.mono-line {
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.planner {
+  display: grid;
+  gap: 16px;
+}
+.planner-form {
+  display: grid;
+  gap: 16px;
+}
+.planner-places {
+  display: grid;
+  gap: 8px;
+}
+.planner-place {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 150px);
+  gap: 10px;
+  align-items: center;
+}
+.planner-place label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.planner-place input[type="number"],
+.planner-name input {
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+}
+.planner-place input[type="number"]:disabled {
+  background: #eceef1;
+  color: #5b6068;
+}
+.planner-name label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.warn {
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin: 8px 0 0;
+}
+.planner-output h3 {
+  margin: 0 0 8px;
+}
+.planner-output ul {
+  margin: 0 0 12px;
+  padding-left: 20px;
+}
+.planner-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin: 0;
+}
+@media print {
+  body.print-planner .site-bar,
+  body.print-planner .guide-hero,
+  body.print-planner .foot,
+  body.print-planner .guide-main > :not(.card:has(.planner)),
+  body.print-planner .card:has(.planner) > :not(.planner),
+  body.print-planner .planner-form,
+  body.print-planner .planner-buttons {
+    display: none !important;
+  }
+}
+.planner-form > *,
+.planner fieldset {
+  min-width: 0;
+}
+.planner-place > * {
+  min-width: 0;
+}
+.planner-place label {
+  position: relative;
+}
+.planner,
+.planner-form {
+  grid-template-columns: minmax(0, 1fr);
+}

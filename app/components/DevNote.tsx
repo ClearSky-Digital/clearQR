@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { DEV } from "../content/home-copy";
 
 /** Developer rows: open in the page as sent (so print and no-script show them), closed once script runs, open again for print. */
-export function DevNote() {
+export type DevRowItem = { title: string; body: ReactNode };
+
+/** `rows` replaces the home page rows; a row's body is already markup. */
+export function DevNote({ rows }: { rows?: DevRowItem[] }) {
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const all = () => [...(root.current?.querySelectorAll("details") ?? [])];
@@ -30,10 +33,13 @@ export function DevNote() {
   }, []);
   return (
     <div ref={root} className="dev-rows">
-      {DEV.rows.map((r) => (
+      {(rows ?? DEV.rows.map((r) => ({
+        title: r.title,
+        body: <p>{r.body.map((part, i) => (typeof part === "string" ? part : <code key={i}>{part.code}</code>))}</p>,
+      }))).map((r) => (
         <details key={r.title} open>
           <summary>{r.title}</summary>
-          <p>{r.body.map((part, i) => (typeof part === "string" ? part : <code key={i}>{part.code}</code>))}</p>
+          {r.body}
         </details>
       ))}
     </div>
