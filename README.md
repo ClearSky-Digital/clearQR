@@ -15,13 +15,15 @@ ClearQR is free. If it saves you a subscription, you can [leave a tip](https://c
 - Image mode: blend a photo with the code.
 - Output: PNG and SVG.
 - A scan check: every code is read back in the browser (or the terminal) and marked "scans" or "won't scan" before you download it.
-- Campaign tags for link codes: optional source, medium, campaign and content values are added to the address as `utm_` tags before the code is made, so your own analytics can tell a flyer from a business card. ClearQR counts nothing itself. The app has a short guide to reading the results in Google Analytics and to making a printed code changeable with a short link on your own domain.
+- Campaign tags for link codes: optional source, medium, campaign and content values are added to the address as `utm_` tags before the code is made, so your own analytics can tell a flyer from a business card. ClearQR counts nothing itself.
 
 ## Privacy
 
 Nothing leaves your device. The web app is a static page: no server code, no uploads, no accounts, no analytics, no tracking. Fonts are bundled, and the production page blocks network connections from its own scripts.
 
 ## Web app
+
+This repository holds the generator: the engine, the command line and the generator page. The clearqr.app site (guides, calculator and hosting) is built from this code in a separate repository.
 
 ```
 npm install
@@ -85,35 +87,6 @@ The web app is a static folder (`out/`). A static host that lets you set respons
 
 Hosts that cannot set headers (GitHub Pages is one) still serve a working app with the meta policy, but `frame-ancestors` and the other headers do not apply there.
 
-## Docker
-
-Each release is published as the image `ghcr.io/clearsky-digital/clearqr`, tagged with its version and `latest`. It serves the app at the root of its address (for example `https://clearqr.app/`) with the headers above. The container has no Node at run time, runs as a non-root user, and listens on port 8080.
-
-To try it on your own computer:
-
-```
-docker run --rm -p 8088:8080 ghcr.io/clearsky-digital/clearqr:1.1.0
-```
-
-The app is then at `http://localhost:8088/`.
-
-On a server behind a reverse proxy, use `docker-compose.yml`. It pulls the release image and publishes no host port. Instead it joins the proxy's existing Docker network, and the proxy forwards to `clearqr-app:8080`. Two settings:
-
-- `CLEARQR_TAG`: the release to run (default `1.1.0`).
-- `PROXY_NETWORK`: the name of the proxy's external network (default `publictools`).
-
-The released image is built with the tip and setup-help links at their defaults and no tip link. `NEXT_PUBLIC_CLEARQR_TIP_URL` (shows a "Leave a tip" card and footer link when set to an https address), `NEXT_PUBLIC_CLEARQR_CONTACT_URL` (the "Ask for setup help" link; default `https://cscloud.digital/qr-code-marketing/#setup-help`) and `NEXT_PUBLIC_CLEARQR_GUIDES_URL` are build options (`--build-arg`), so a different value needs your own build. For a release with the tip card, build with `--build-arg NEXT_PUBLIC_CLEARQR_TIP_URL=https://cscloud.digital/tip/`.
-
-With Nginx Proxy Manager, add a proxy host for your domain with scheme `http`, forward hostname `clearqr-app` and port `8080`, and turn on TLS. No custom location is needed.
-
-To serve the app under another subpath, build your own image. The subpath is fixed into the pages at build time:
-
-```
-docker build --build-arg CLEARQR_BASE_PATH=/qr -t clearqr .
-```
-
-Leave `CLEARQR_BASE_PATH` empty (the default) for a site root.
-
 ## Security notes
 
 - Nothing leaves the device: the page makes no network requests, and a policy in the page blocks them.
@@ -132,17 +105,3 @@ The tests cover an encode and decode round trip for every type, config validatio
 ## License
 
 MIT. See `LICENSE` and `NOTICE`.
-
-
-
-### Moving the app to a new address
-
-Set `CLEARQR_REDIRECT_TO` (a plain https address) when you build the image to get a redirect-only container: every request gets a permanent (301) redirect to the same path on the new address, and the old subpath is dropped (build with `--build-arg CLEARQR_BASE_PATH=/clearqr` so the old address is recognized). For example `--build-arg CLEARQR_REDIRECT_TO=https://example.org` sends `/clearqr/guide/?a=1` to `https://example.org/guide/?a=1`. The container also answers `/healthz` with 200 so a health check does not follow the redirect.
-
-To retire an old subpath address, build the redirect image with both settings:
-
-```
-docker build -t clearqr:redirect --build-arg CLEARQR_BASE_PATH=/clearqr --build-arg CLEARQR_REDIRECT_TO=https://clearqr.app .
-```
-
-Checked on a local container: `/clearqr/`, `/clearqr` and `/Clearqr/` go to `https://clearqr.app/`, `/clearqr/count-your-scans/?a=1` goes to `https://clearqr.app/count-your-scans/?a=1`, and the old `/clearqr/make/` goes to `https://clearqr.app/#generator`. Run it as the container the old address's proxy host points at.

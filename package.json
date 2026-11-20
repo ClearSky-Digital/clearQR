@@ -11,15 +11,12 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/check-placeholders.mjs",
+    "build": "next build",
     "build:cli": "tsup",
     "schema": "tsx scripts/make-schema.ts",
-    "icons": "tsx scripts/make-icons.ts",
     "test": "vitest run",
     "mutation-proof": "node scripts/mutation-proof.mjs",
-    "check:balance": "node scripts/run-check.mjs scripts/balance-check.mjs",
-    "check:contrast": "node scripts/run-check.mjs scripts/contrast.mjs",
-    "check:home": "node scripts/run-check.mjs scripts/home-check.mjs"
+    "check:offline": "node scripts/run-check.mjs scripts/offline-check.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",

@@ -1,10 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Logo } from "./Logo";
-import { Guide, HeroActions, Pitch, TagsCallout, TipCard } from "./Guide";
-import { tipLink } from "../lib/site";
-import { TIP } from "../lib/copy";
 import {
   PRESETS,
   QR_TYPES,
@@ -56,7 +53,20 @@ function downloadBlob(blob: Blob, name: string) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-export default function Generator({ embedded = false }: { embedded?: boolean } = {}) {
+/**
+ * Page content that belongs to a site around the generator. Every slot is optional and empty by default, so the generator
+ * stands alone; a site passes its own text, links and tip card in here.
+ */
+export type GeneratorSlots = {
+  heroActions?: ReactNode;
+  pitch?: ReactNode;
+  tagsCallout?: ReactNode;
+  tipCard?: ReactNode;
+  guide?: ReactNode;
+  footerExtra?: ReactNode;
+};
+
+export default function Generator({ embedded = false, slots = {} }: { embedded?: boolean; slots?: GeneratorSlots } = {}) {
   const [type, setType] = useState<QrType>("link");
   const [valuesByType, setValuesByType] = useState<Record<QrType, Values>>(
     () => Object.fromEntries(QR_TYPES.map((t) => [t, emptyValues(t)])) as Record<QrType, Values>,
@@ -220,13 +230,13 @@ export default function Generator({ embedded = false }: { embedded?: boolean } =
               Pick what the code should do, choose a look, and download it. No account, no limits, no subscription.
             </p>
           </div>
-          <HeroActions />
+          {slots.heroActions}
         </div>
       </header>
       )}
 
       <Main embedded={embedded}>
-        {!embedded && <Pitch />}
+        {!embedded && slots.pitch}
         <div className="layout">
           <section className="card area-type" aria-labelledby="h-type">
             <h2 id="h-type">
@@ -261,7 +271,7 @@ export default function Generator({ embedded = false }: { embedded?: boolean } =
                 <p className="fine">
                   Tags let your own website analytics tell which printed piece brought each visit. See the guide below.
                 </p>
-                <TagsCallout />
+                {slots.tagsCallout}
                 <div className="chips" role="group" aria-label="Campaign presets">
                   {CAMPAIGN_PRESETS.map((p) => (
                     <button
@@ -534,8 +544,8 @@ export default function Generator({ embedded = false }: { embedded?: boolean } =
           <strong>Nothing leaves your device.</strong> Your text, contact details, photos and settings stay in this
           browser tab. The code is drawn and checked here, with no uploads, no accounts, no analytics and no tracking.
         </p>
-        <TipCard />
-        {!embedded && <Guide />}
+        {slots.tipCard}
+        {!embedded && slots.guide}
       </Main>
 
       {!embedded && (
@@ -544,16 +554,7 @@ export default function Generator({ embedded = false }: { embedded?: boolean } =
           <p>
             ClearQR is free and open source under the MIT license. Built and maintained by{" "}
             <a href="https://cscloud.digital" rel="noopener noreferrer">ClearSky Digital</a>.
-            {tipLink() && (
-              <>
-                {" "}
-                <a href={tipLink() as string} target="_blank" rel="noopener noreferrer">
-                  {TIP.footer}
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
-                .
-              </>
-            )}
+            {slots.footerExtra}
           </p>
         </div>
       </footer>

@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/oswald";
 import "@fontsource-variable/inter";
-import "./globals.css";
+import "./generator.css";
 
 export const metadata: Metadata = {
   title: "ClearQR: free QR codes that stay on your device",

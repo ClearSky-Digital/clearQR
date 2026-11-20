@@ -72,7 +72,7 @@ describe("the page", () => {
 
 /* ---------- text contrast (WCAG AA) ---------- */
 
-const css = readFileSync(join(root, "app", "globals.css"), "utf8");
+const css = readFileSync(join(root, "app", "generator.css"), "utf8");
 const vars: Record<string, string> = {};
 for (const m of css.matchAll(/--([a-z-]+):\s*(#[0-9a-fA-F]{6})/g)) vars[m[1]] = m[2];
 
