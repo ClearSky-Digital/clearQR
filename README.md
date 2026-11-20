@@ -98,7 +98,7 @@ The app is then at `http://localhost:8088/clearqr/`.
 On a server behind a reverse proxy, use `docker-compose.yml`. It pulls the release image and publishes no host port. Instead it joins the proxy's existing Docker network, and the proxy forwards to `clearqr:8080` with the subpath unchanged. Two settings:
 
 - `CLEARQR_TAG`: the release to run (default `1.1.0`).
-- Build options (`--build-arg`): `NEXT_PUBLIC_CLEARQR_TIP_URL` shows a "Leave a tip" card and footer link when set to an https address (hidden when empty), and `NEXT_PUBLIC_CLEARQR_CONTACT_URL` sets the "Ask for setup help" link (default `https://cscloud.digital/free-qr-code-generator/#setup-help`). `NEXT_PUBLIC_CLEARQR_GUIDES_URL` (the address of the guide site, for example `https://example.org`) shows a "Full step-by-step guide" link in each guide section and stays hidden when empty. All three are plain links, fixed at build time, and the page makes no requests of its own.
+- Build options (`--build-arg`): `NEXT_PUBLIC_CLEARQR_TIP_URL` shows a "Leave a tip" card and footer link when set to an https address (hidden when empty), and `NEXT_PUBLIC_CLEARQR_CONTACT_URL` sets the "Ask for setup help" link (default `https://cscloud.digital/qr-code-marketing/#setup-help`). `NEXT_PUBLIC_CLEARQR_GUIDES_URL` (the address of the guide site, for example `https://example.org`) shows a "Full step-by-step guide" link in each guide section and stays hidden when empty. All three are plain links, fixed at build time, and the page makes no requests of its own.
 - `PROXY_NETWORK`: the name of the proxy's external network (default `publictools`).
 
 With Nginx Proxy Manager, edit the proxy host, open the Advanced tab (not a custom location's gear) and paste:

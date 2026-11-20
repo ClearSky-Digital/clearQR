@@ -33,7 +33,7 @@ describe("guide, paths and tip card", () => {
     const html = renderToStaticMarkup(createElement(Pitch)) + renderToStaticMarkup(createElement(HeroActions));
     expect(html).toContain(PITCH.headline);
     expect(html).toContain('href="#h-guide"');
-    expect(html).toMatch(/href="https:\/\/cscloud\.digital\/free-qr-code-generator\/\?utm_source=clearqr&amp;utm_medium=app&amp;utm_campaign=setup-help#setup-help"[^>]*target="_blank"/);
+    expect(html).toMatch(/href="https:\/\/cscloud\.digital\/qr-code-marketing\/\?utm_source=clearqr&amp;utm_medium=app&amp;utm_campaign=setup-help#setup-help"[^>]*target="_blank"/);
     expect(html).toContain("(opens in a new tab)");
     expect(PITCH.text).toMatch(/\bMany\b/);
     expect(PITCH.text).not.toMatch(/\b(dynamic|host|hosted|all|every|always|never)\b/i);
@@ -77,7 +77,7 @@ describe("guide, paths and tip card", () => {
     const at = html.indexOf(GUIDE.changeableCta);
     expect(at).toBeGreaterThan(0);
     const anchor = html.slice(html.lastIndexOf("<a ", at), at);
-    expect(anchor).toContain("free-qr-code-generator/?utm_source=clearqr");
+    expect(anchor).toContain("qr-code-marketing/?utm_source=clearqr");
     expect(anchor).toContain('target="_blank"');
   });
   it("the footer tip link opens in a new tab and says so", () => {
@@ -89,7 +89,7 @@ describe("guide, paths and tip card", () => {
   });
   it("the setup help link opens in a new tab and says so", () => {
     const guide = renderToStaticMarkup(createElement(Guide));
-    const a = guide.match(/<a [^>]*href="https:\/\/cscloud\.digital\/free-qr-code-generator\/[^"]*"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
+    const a = guide.match(/<a [^>]*href="https:\/\/cscloud\.digital\/qr-code-marketing\/[^"]*"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
     expect(a).toContain('target="_blank"');
     expect(a).toContain('rel="noopener noreferrer"');
     expect(a).toContain("(opens in a new tab)");
@@ -174,7 +174,7 @@ describe("guide steps, full-guide links and the tags callout", () => {
     expect(html).toContain(CALLOUT.diy);
     expect(html).toContain(CALLOUT.help);
     expect(html).toContain('href="#h-guide"');
-    expect(html).toMatch(/href="https:\/\/cscloud\.digital\/free-qr-code-generator\/\?utm_source=clearqr[^"]*#setup-help"[^>]*target="_blank"/);
+    expect(html).toMatch(/href="https:\/\/cscloud\.digital\/qr-code-marketing\/\?utm_source=clearqr[^"]*#setup-help"[^>]*target="_blank"/);
     expect(html.match(/<svg[^>]*aria-hidden="true"/g)?.length).toBe(2);
     for (const w of [CALLOUT.diyNote, CALLOUT.helpNote]) expect((CALLOUT.diy + CALLOUT.help + w).length).toBeLessThan(80);
     const page = renderToStaticMarkup(createElement(Generator));

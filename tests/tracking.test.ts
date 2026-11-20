@@ -99,11 +99,11 @@ describe("form mapping for the tag fields", () => {
 describe("our own outbound links", () => {
   it("the setup link carries our tags, and falls back to the contact page", () => {
     expect(setupLink("")).toBe(
-      "https://cscloud.digital/free-qr-code-generator/?utm_source=clearqr&utm_medium=app&utm_campaign=setup-help#setup-help",
+      "https://cscloud.digital/qr-code-marketing/?utm_source=clearqr&utm_medium=app&utm_campaign=setup-help#setup-help",
     );
     expect(setupLink("https://example.org/hello/")).toBe("https://example.org/hello/?utm_source=clearqr&utm_medium=app&utm_campaign=setup-help");
     expect(setupLink("https://x.org/a?b=1#f")).toBe("https://x.org/a?b=1&utm_source=clearqr&utm_medium=app&utm_campaign=setup-help#f");
-    expect(DEFAULT_CONTACT_URL).toBe("https://cscloud.digital/free-qr-code-generator/#setup-help");
+    expect(DEFAULT_CONTACT_URL).toBe("https://cscloud.digital/qr-code-marketing/#setup-help");
   });
   it("the tip link carries our tags, and is hidden unless it is a clean https address", () => {
     expect(tipLink("https://buy.stripe.com/abc123")).toBe("https://buy.stripe.com/abc123?utm_source=clearqr&utm_medium=app&utm_campaign=tip");
