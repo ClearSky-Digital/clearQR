@@ -143,7 +143,7 @@ export const DEV = {
         " runs it. Behind a reverse proxy, use ",
         { code: "docker-compose.yml" },
         ", which publishes no port of its own. The local address is ",
-        { code: "http://localhost:8088/clearqr/" },
+        { code: "http://localhost:8088/" },
         ".",
       ],
     },

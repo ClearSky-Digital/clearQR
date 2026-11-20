@@ -85,7 +85,7 @@ Hosts that cannot set headers (GitHub Pages is one) still serve a working app wi
 
 ## Docker
 
-Each release is published as the image `ghcr.io/clearsky-digital/clearqr`, tagged with its version and `latest`. It serves the app under `/clearqr/` with the headers above. The container has no Node at run time, runs as a non-root user, and listens on port 8080.
+Each release is published as the image `ghcr.io/clearsky-digital/clearqr`, tagged with its version and `latest`. It serves the app at the root of its address (for example `https://clearqr.app/`) with the headers above. The container has no Node at run time, runs as a non-root user, and listens on port 8080.
 
 To try it on your own computer:
 
@@ -93,26 +93,16 @@ To try it on your own computer:
 docker run --rm -p 8088:8080 ghcr.io/clearsky-digital/clearqr:1.1.0
 ```
 
-The app is then at `http://localhost:8088/clearqr/`.
+The app is then at `http://localhost:8088/`.
 
-On a server behind a reverse proxy, use `docker-compose.yml`. It pulls the release image and publishes no host port. Instead it joins the proxy's existing Docker network, and the proxy forwards to `clearqr:8080` with the subpath unchanged. Two settings:
+On a server behind a reverse proxy, use `docker-compose.yml`. It pulls the release image and publishes no host port. Instead it joins the proxy's existing Docker network, and the proxy forwards to `clearqr-app:8080`. Two settings:
 
 - `CLEARQR_TAG`: the release to run (default `1.1.0`).
-- Build options (`--build-arg`): `NEXT_PUBLIC_CLEARQR_TIP_URL` shows a "Leave a tip" card and footer link when set to an https address (hidden when empty), and `NEXT_PUBLIC_CLEARQR_CONTACT_URL` sets the "Ask for setup help" link (default `https://cscloud.digital/qr-code-marketing/#setup-help`). `NEXT_PUBLIC_CLEARQR_GUIDES_URL` (the address of the guide site, for example `https://example.org`) shows a "Full step-by-step guide" link in each guide section and stays hidden when empty. All three are plain links, fixed at build time, and the page makes no requests of its own.
 - `PROXY_NETWORK`: the name of the proxy's external network (default `publictools`).
 
-With Nginx Proxy Manager, edit the proxy host, open the Advanced tab (not a custom location's gear) and paste:
+The released image is built with the tip and setup-help links at their defaults and no tip link. `NEXT_PUBLIC_CLEARQR_TIP_URL` (shows a "Leave a tip" card and footer link when set to an https address), `NEXT_PUBLIC_CLEARQR_CONTACT_URL` (the "Ask for setup help" link; default `https://cscloud.digital/qr-code-marketing/#setup-help`) and `NEXT_PUBLIC_CLEARQR_GUIDES_URL` are build options (`--build-arg`), so a different value needs your own build.
 
-```
-location ~* ^/clearqr(/|$) {
-    proxy_pass http://clearqr:8080;
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-}
-```
-
-This matches the path in any capitalization, and the container then redirects to the lowercase `/clearqr/`. A plain custom location `/clearqr` (scheme `http`, forward hostname `clearqr`, port `8080`) also works, for the lowercase address only.
+With Nginx Proxy Manager, add a proxy host for your domain with scheme `http`, forward hostname `clearqr-app` and port `8080`, and turn on TLS. No custom location is needed.
 
 To serve the app under another subpath, build your own image. The subpath is fixed into the pages at build time:
 
@@ -120,7 +110,7 @@ To serve the app under another subpath, build your own image. The subpath is fix
 docker build --build-arg CLEARQR_BASE_PATH=/qr -t clearqr .
 ```
 
-Leave `CLEARQR_BASE_PATH` empty for a site root.
+Leave `CLEARQR_BASE_PATH` empty (the default) for a site root.
 
 ## Security notes
 
@@ -145,4 +135,4 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ### Moving the app to a new address
 
-Set `CLEARQR_REDIRECT_TO` (a plain https address) when you build the image to get a redirect-only container: every request gets a permanent (301) redirect to the same path on the new address, and the old subpath (`/clearqr`) is dropped. For example `--build-arg CLEARQR_REDIRECT_TO=https://example.org` sends `/clearqr/guide/?a=1` to `https://example.org/guide/?a=1`. The container also answers `/healthz` with 200 so a health check does not follow the redirect.
+Set `CLEARQR_REDIRECT_TO` (a plain https address) when you build the image to get a redirect-only container: every request gets a permanent (301) redirect to the same path on the new address, and the old subpath is dropped (build with `--build-arg CLEARQR_BASE_PATH=/clearqr` so the old address is recognized). For example `--build-arg CLEARQR_REDIRECT_TO=https://example.org` sends `/clearqr/guide/?a=1` to `https://example.org/guide/?a=1`. The container also answers `/healthz` with 200 so a health check does not follow the redirect.

@@ -1,10 +1,10 @@
 # ClearQR web app as a small static container.
 # Stage 1 builds the static export; stage 2 serves it with nginx (no Node at run time).
-# CLEARQR_BASE_PATH is the subpath the app lives under (default /clearqr); set it to "" for a site root.
+# CLEARQR_BASE_PATH is the subpath the app lives under (default empty, a site root such as https://clearqr.app/); set it to /clearqr or another subpath to serve from one.
 
 FROM node:24-bookworm-slim AS build
 WORKDIR /app
-ARG CLEARQR_BASE_PATH=/clearqr
+ARG CLEARQR_BASE_PATH=
 # Optional links shown in the page, fixed at build time. Leave the tip link empty to hide the tip card.
 ARG NEXT_PUBLIC_CLEARQR_TIP_URL=
 ARG NEXT_PUBLIC_CLEARQR_CONTACT_URL=
@@ -24,7 +24,7 @@ COPY . .
 RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:stable-alpine
-ARG CLEARQR_BASE_PATH=/clearqr
+ARG CLEARQR_BASE_PATH=
 # Redirect-only mode: set to the new site address (https only) and this image answers every path with a 301 to it.
 ARG CLEARQR_REDIRECT_TO=
 ARG CLEARQR_VERSION=dev
