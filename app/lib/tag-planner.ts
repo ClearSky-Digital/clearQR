@@ -8,7 +8,7 @@ export const MAX_TAG = 100;
 export type PlanRow = { place: string; copies: number | null; campaign: string };
 
 export function tooLong(name: string): boolean {
-  return name.trim().length > MAX_TAG;
+  return name.length > MAX_TAG;
 }
 
 /** One row per ticked place, in the order of PLACES. `copies` is blank until a number is typed. */

@@ -25,7 +25,7 @@ export function Body() {
 
       <section className="card" id="bakery" aria-labelledby="h-bakery">
         <h2 id="h-bakery">A bakery, three kinds of paper, one question</h2>
-        <p className="steps-label" aria-label="Three steps: tag, print, read">
+        <p className="steps-label">
           <span>1 Tag</span> · <span>2 Print</span> · <span>3 Read</span>
         </p>
         <div className="pair">

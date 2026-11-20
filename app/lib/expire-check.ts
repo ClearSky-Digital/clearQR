@@ -135,7 +135,7 @@ export const VERDICT_TABLE: [string, string, string][] = [
   ["Who holds the code: Not sure", "Works, with one thing to watch", "A service that held the code stopped"],
   ["Page it opens: Not sure", "Works, with one thing to watch", "The page it opens is gone"],
   ["Print: Worn or faded, or Not sure", "Works, with one thing to watch", "The print wore out"],
-  ["One flagged pool answer", "Should keep working, with a line pointing to the checklist in section 5", "Section 5 checklist"],
+  ["One flagged pool answer", "Should keep working, with a line pointing to the checklist below", "The checklist below"],
   ["Two or more flagged pool answers", "Works, with one thing to watch", "The cause each flagged answer maps to"],
   ["Everything else", "Should keep working", "None"],
 ];
