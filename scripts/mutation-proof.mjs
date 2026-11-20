@@ -52,7 +52,7 @@ function runTests(dir) {
 function copyTo(dir) {
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
-  for (const p of ["src", "app", "tests", "scripts", "examples", "schema", "public", "vitest.config.ts", "tsconfig.json", "package.json"]) {
+  for (const p of ["src", "app", "tests", "scripts", "examples", "schema", "vitest.config.ts", "tsconfig.json", "package.json"]) {
     cpSync(join(root, p), join(dir, p), { recursive: true, filter: (s) => !s.includes(`${join("tests", ".tmp")}`) });
   }
 }
