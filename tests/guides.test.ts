@@ -33,3 +33,12 @@ describe("guide bodies", () => {
     }
   });
 });
+
+describe("generator on the home page", () => {
+  it("has no /make/ route and redirects the old address to the home anchor", () => {
+    expect(() => read("app/make/page.tsx")).toThrow();
+    expect(read("deploy/nginx.conf")).toMatch(/location = __BASE__\/make\/ \{\s*return 301 __BASE__\/#generator;/);
+    expect(read("deploy/nginx-redirect.conf")).toMatch(/location = __BASE__\/make\/ \{\s*return 301 __TARGET__\/#generator;/);
+    expect(read("app/content/HomePage.tsx")).toContain('id="generator"');
+  });
+});

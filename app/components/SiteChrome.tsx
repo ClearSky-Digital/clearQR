@@ -17,7 +17,7 @@ export function SiteBar() {
         <nav aria-label="Guides">
           <ul>
             <li>
-              <Link href="/make/">Make a code</Link>
+              <Link href="/#generator">Make a code</Link>
             </li>
             {guides.map((g) => (
               <li key={g.slug}>

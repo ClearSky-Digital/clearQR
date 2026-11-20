@@ -7,7 +7,7 @@ import path from "node:path";
 import { CHROME } from "./_paths.mjs";
 
 
-const PAGES = ["/", "/make/", "/count-your-scans/", "/do-qr-codes-expire/", "/static-vs-dynamic/", "/changeable-code/"]; // adapted for ClearQR
+const PAGES = ["/", "/count-your-scans/", "/do-qr-codes-expire/", "/static-vs-dynamic/", "/changeable-code/"]; // adapted for ClearQR
 
 const lum = ([r, g, b]) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
 const ratio = (a, b) => { const la = lum(a), lb = lum(b); return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05); };

@@ -16,7 +16,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { CHROME } from "./_paths.mjs";
 
-const ALL = ["/", "/make/", "/count-your-scans/", "/do-qr-codes-expire/", "/static-vs-dynamic/", "/changeable-code/"]; // adapted for ClearQR; the list is read from the sitemap routes plus every guide folder in out/ when --all is passed
+const ALL = ["/", "/count-your-scans/", "/do-qr-codes-expire/", "/static-vs-dynamic/", "/changeable-code/"]; // adapted for ClearQR; the list is read from the sitemap routes plus every guide folder in out/ when --all is passed
 const WIDTHS = [1440, 1100, 390];
 
 const probe = () => {

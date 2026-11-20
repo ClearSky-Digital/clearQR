@@ -1,5 +1,6 @@
 import { Chooser, type Hrefs } from "../components/Chooser";
 import { DevNote } from "../components/DevNote";
+import Generator from "../components/Generator";
 import { HomeArt } from "../components/HomeArt";
 import { SiteBar, SiteFooter } from "../components/SiteChrome";
 import { readyGuides } from "../lib/pages";
@@ -16,7 +17,7 @@ const NO_SCRIPT_CSS =
 /** The mini-site home page. A guide link shows only when that guide has real copy. */
 export function HomePage() {
   const ready = new Set(readyGuides().map((g) => g.slug));
-  const hrefs: Hrefs = { app: at("/make/"), setup: setupLink() };
+  const hrefs: Hrefs = { app: "#generator", setup: setupLink() };
   if (ready.has("do-qr-codes-expire")) hrefs.expire = at("/do-qr-codes-expire/");
   if (ready.has("count-your-scans")) hrefs.track = at("/count-your-scans/");
   if (ready.has("changeable-code")) hrefs.change = at("/changeable-code/");
@@ -37,14 +38,9 @@ export function HomePage() {
                 <p key={l}>{l}</p>
               ))}
             </div>
-            <p className="hero-buttons">
-              <a className="btn primary" href={hrefs.app}>
-                {HERO.make}
-              </a>
-              <a className="btn" href="#chooser">
-                {HERO.how}
-              </a>
-              <a className="btn" href={setup} target="_blank" rel="noopener noreferrer">
+            <p className="hero-links">
+              <a href="#chooser">{HERO.how}</a>
+              <a href={setup} target="_blank" rel="noopener noreferrer">
                 {HERO.help}
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
@@ -52,9 +48,12 @@ export function HomePage() {
           </div>
           <HomeArt />
         </div>
-        <p className="wrap fine">{HERO.fine}</p>
       </section>
       <main>
+        <section id="generator" aria-label="QR code generator">
+          <Generator embedded />
+          <p className="wrap fine gen-fine">{HERO.fine}</p>
+        </section>
         <section id="chooser" className="wrap home-band" aria-labelledby="h-chooser">
           <h2 id="h-chooser">{CHOOSER.title}</h2>
           <Chooser hrefs={hrefs} />

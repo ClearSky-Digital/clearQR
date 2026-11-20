@@ -1,6 +1,6 @@
 // Ship checks for the home page that no general check covers. Run after a build:
 //   node scripts/run-check.mjs scripts/home-check.mjs
-//   1. at 390 wide (667 high), the three hero buttons sit above the fold
+//   1. at 390 wide (667 high), the H1 and the generator's first input sit above the fold
 //   2. at 1100 and wider, the chooser rows are level (same height), the answer panel is within 55 percent of the row column, and the
 //      panel keeps one height whichever row is chosen
 //   3. with script off, all four answers and all five developer rows are visible; the print view shows them too
@@ -22,8 +22,9 @@ export default async function ({ base }) {
       const ctx = await browser.newContext({ viewport: { width: 390, height: 667 } });
       const page = await ctx.newPage();
       await page.goto(base + "/", { waitUntil: "load" });
-      const boxes = await page.$$eval(".hero-buttons .btn", (els) => els.map((e) => e.getBoundingClientRect().bottom));
-      ok(boxes.length === 3 && boxes.every((b) => b <= 667), `hero buttons above the fold at 390x667 (bottoms ${boxes.map(Math.round).join(", ")})`);
+      const h1 = await page.$eval("h1", (e) => e.getBoundingClientRect().bottom);
+      const gen = await page.$eval("#generator .fields input, #generator .fields textarea", (e) => e.getBoundingClientRect().bottom);
+      ok(h1 <= 667 && gen <= 667, `H1 and the generator's first input above the fold at 390x667 (bottoms ${Math.round(h1)}, ${Math.round(gen)})`);
       await ctx.close();
     }
     // 2 chooser levels at 1100 and 1440
@@ -31,7 +32,7 @@ export default async function ({ base }) {
       const ctx = await browser.newContext({ viewport: { width: w, height: 900 } });
       const page = await ctx.newPage();
       const requests = [];
-      page.on("request", (r) => { if (!r.url().startsWith(base)) requests.push(r.url()); });
+      page.on("request", (r) => { if (!r.url().startsWith(base) && !/^(blob|data):/.test(r.url())) requests.push(r.url()); });
       await page.goto(base + "/", { waitUntil: "load" });
       await page.waitForTimeout(300);
       const hs = await page.$$eval(".choice-tab", (els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));

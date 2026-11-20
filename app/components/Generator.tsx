@@ -56,7 +56,7 @@ function downloadBlob(blob: Blob, name: string) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-export default function Generator() {
+export default function Generator({ embedded = false }: { embedded?: boolean } = {}) {
   const [type, setType] = useState<QrType>("link");
   const [valuesByType, setValuesByType] = useState<Record<QrType, Values>>(
     () => Object.fromEntries(QR_TYPES.map((t) => [t, emptyValues(t)])) as Record<QrType, Values>,
@@ -205,6 +205,7 @@ export default function Generator() {
 
   return (
     <>
+      {!embedded && (
       <header className="top">
         <div className="wrap top-inner">
           <div className="hero-text">
@@ -222,14 +223,10 @@ export default function Generator() {
           <HeroActions />
         </div>
       </header>
+      )}
 
-      <main className="wrap">
-        <Pitch />
-        <p className="privacy" id="privacy">
-          <strong>Nothing leaves your device.</strong> Your text, contact details, photos and settings stay in this
-          browser tab. The code is drawn and checked here, with no uploads, no accounts, no analytics and no tracking.
-        </p>
-
+      <Main embedded={embedded}>
+        {!embedded && <Pitch />}
         <div className="layout">
           <section className="card area-type" aria-labelledby="h-type">
             <h2 id="h-type">
@@ -533,10 +530,15 @@ export default function Generator() {
             )}
           </section>
         </div>
+        <p className="privacy" id="privacy">
+          <strong>Nothing leaves your device.</strong> Your text, contact details, photos and settings stay in this
+          browser tab. The code is drawn and checked here, with no uploads, no accounts, no analytics and no tracking.
+        </p>
         <TipCard />
-        <Guide />
-      </main>
+        {!embedded && <Guide />}
+      </Main>
 
+      {!embedded && (
       <footer className="foot">
         <div className="wrap">
           <p>
@@ -555,8 +557,13 @@ export default function Generator() {
           </p>
         </div>
       </footer>
+      )}
     </>
   );
+}
+
+function Main({ embedded, children }: { embedded: boolean; children: React.ReactNode }) {
+  return embedded ? <div className="wrap">{children}</div> : <main className="wrap">{children}</main>;
 }
 
 function FieldInput({

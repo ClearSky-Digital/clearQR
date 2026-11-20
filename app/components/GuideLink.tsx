@@ -9,5 +9,5 @@ export function GL({ slug, children }: { slug: string; children: React.ReactNode
 
 /** A link into the generator, which is always there. */
 export function AppLink({ children }: { children: React.ReactNode }) {
-  return <Link href="/make/">{children}</Link>;
+  return <Link href="/#generator">{children}</Link>;
 }
