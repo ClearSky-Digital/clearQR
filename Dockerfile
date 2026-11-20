@@ -10,10 +10,13 @@ ARG NEXT_PUBLIC_CLEARQR_TIP_URL=
 ARG NEXT_PUBLIC_CLEARQR_CONTACT_URL=
 # The guide site, for the "Full step-by-step guide" links. Leave empty to hide them.
 ARG NEXT_PUBLIC_CLEARQR_GUIDES_URL=
+# Set to 1 for a release build: a guide page that still shows the placeholder fails the build.
+ARG CLEARQR_STRICT=
 ENV CLEARQR_BASE_PATH=${CLEARQR_BASE_PATH} \
     NEXT_PUBLIC_CLEARQR_TIP_URL=${NEXT_PUBLIC_CLEARQR_TIP_URL} \
     NEXT_PUBLIC_CLEARQR_CONTACT_URL=${NEXT_PUBLIC_CLEARQR_CONTACT_URL} \
     NEXT_PUBLIC_CLEARQR_GUIDES_URL=${NEXT_PUBLIC_CLEARQR_GUIDES_URL} \
+    CLEARQR_STRICT=${CLEARQR_STRICT} \
     NEXT_TELEMETRY_DISABLED=1
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
