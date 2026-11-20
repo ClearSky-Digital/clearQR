@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Logo } from "./Logo";
-import { Guide, Pitch, TipCard } from "./Guide";
+import { Guide, HeroActions, Pitch, TipCard } from "./Guide";
 import { tipLink } from "../lib/site";
 import { TIP } from "../lib/copy";
 import {
@@ -207,16 +207,19 @@ export default function Generator() {
     <>
       <header className="top">
         <div className="wrap top-inner">
-          <p className="brand">
-            <Logo size={30} />
-            <span className="brand-name">
-              Clear<span>QR</span>
-            </span>
-          </p>
-          <h1>Free QR codes. Made on your device.</h1>
-          <p className="lead">
-            Pick what the code should do, choose a look, and download it. No account, no limits, no subscription.
-          </p>
+          <div className="hero-text">
+            <p className="brand">
+              <Logo size={30} />
+              <span className="brand-name">
+                Clear<span>QR</span>
+              </span>
+            </p>
+            <h1>Free QR codes. Made on your device.</h1>
+            <p className="lead">
+              Pick what the code should do, choose a look, and download it. No account, no limits, no subscription.
+            </p>
+          </div>
+          <HeroActions />
         </div>
       </header>
 

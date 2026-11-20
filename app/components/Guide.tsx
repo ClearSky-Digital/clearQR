@@ -9,20 +9,26 @@ export function openGuide(doc: { getElementById(id: string): unknown } = documen
   if (el) el.open = true;
 }
 
-export function Pitch({ setup = setupLink() }: { setup?: string }) {
+/** The two buttons that sit in the hero, in its empty right side on wide screens and under the text on a phone. */
+export function HeroActions({ setup = setupLink() }: { setup?: string }) {
+  return (
+    <p className="hero-actions">
+      <a className="btn primary" href="#h-guide" onClick={() => openGuide()}>
+        {PITCH.how}
+      </a>
+      <a className="btn" href={setup} target="_blank" rel="noopener noreferrer">
+        {PITCH.help}
+        <span className="sr-only"> (opens in a new tab)</span>
+      </a>
+    </p>
+  );
+}
+
+export function Pitch() {
   return (
     <section className="card pitch" aria-labelledby="h-pitch">
       <h2 id="h-pitch">{PITCH.headline}</h2>
       <p>{PITCH.text}</p>
-      <p className="pitch-links">
-        <a className="btn primary" href="#h-guide" onClick={() => openGuide()}>
-          {PITCH.how}
-        </a>
-        <a className="btn" href={setup} target="_blank" rel="noopener noreferrer">
-          {PITCH.help}
-          <span className="sr-only"> (opens in a new tab)</span>
-        </a>
-      </p>
     </section>
   );
 }

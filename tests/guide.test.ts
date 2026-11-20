@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import Generator from "../app/components/Generator";
-import { Guide, GUIDE_ID, Pitch, TipCard, openGuide } from "../app/components/Guide";
+import { Guide, GUIDE_ID, HeroActions, Pitch, TipCard, openGuide } from "../app/components/Guide";
 import { COMPARISON, GUIDE, PATHS, PITCH, TIP } from "../app/lib/copy";
 import { root } from "./helpers";
 
@@ -29,7 +29,7 @@ describe("guide, paths and tip card", () => {
     expect(tip).toContain("(opens in a new tab)");
   });
   it("the top message says what ClearQR is, without claiming hosted codes or charging for plain codes", () => {
-    const html = renderToStaticMarkup(createElement(Pitch));
+    const html = renderToStaticMarkup(createElement(Pitch)) + renderToStaticMarkup(createElement(HeroActions));
     expect(html).toContain(PITCH.headline);
     expect(html).toContain('href="#h-guide"');
     expect(html).toMatch(/href="https:\/\/cscloud\.digital\/free-qr-code-generator\/\?utm_source=clearqr&amp;utm_medium=app&amp;utm_campaign=setup-help#setup-help"[^>]*target="_blank"/);
@@ -38,8 +38,15 @@ describe("guide, paths and tip card", () => {
     expect(PITCH.text).not.toMatch(/\b(dynamic|host|hosted|all|every|always|never)\b/i);
     expect(PITCH.text).not.toMatch(/[$\u20ac\u00a3]|\bUSD\b|\bprice|[\u2013\u2014]| - /i);
   });
-  it("the page puts the top message in the main area", () => {
-    expect(renderToStaticMarkup(createElement(Generator))).toContain(PITCH.headline);
+  it("the page puts the buttons in the hero header and the message in the main area", () => {
+    const page = renderToStaticMarkup(createElement(Generator));
+    expect(page).toContain(PITCH.headline);
+    const hero = page.slice(page.indexOf("<header"), page.indexOf("</header>"));
+    expect(hero).toContain("hero-actions");
+    expect(hero).toContain(PITCH.how);
+    expect(hero).toContain(PITCH.help);
+    const main = page.slice(page.indexOf("<main"));
+    expect(main).not.toContain("hero-actions");
   });
   it("the guide carries the id the jump link needs, and the jump link opens it", () => {
     expect(renderToStaticMarkup(createElement(Guide))).toContain(`<details id="${GUIDE_ID}"`);
@@ -56,7 +63,7 @@ describe("guide, paths and tip card", () => {
       for (const k of kids) { const r = find(k); if (r) return r; }
       return null;
     };
-    const link = find(Pitch({}));
+    const link = find(HeroActions({}));
     expect(typeof link?.props.onClick).toBe("function");
     const el = { open: false };
     const real = (globalThis as any).document;

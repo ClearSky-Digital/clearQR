@@ -604,6 +604,7 @@ a {
   text-decoration: none;
 }
 .pitch {
+  margin-top: 16px;
   margin-bottom: 16px;
   border-left: 5px solid var(--blue);
 }
@@ -611,15 +612,46 @@ a {
   margin: 0 0 6px;
 }
 .pitch p {
-  max-width: 72ch;
+  margin: 0;
 }
-.pitch-links {
+@media (min-width: 900px) {
+  .pitch {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 32px;
+    align-items: center;
+  }
+  .pitch h2 {
+    margin: 0;
+  }
+}
+.top-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+.hero-actions {
+  margin: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 12px;
 }
-.pitch .btn {
+.hero-actions .btn {
+  flex: 0 0 auto;
   text-decoration: none;
+  border-color: #ffffff;
+}
+.hero-actions .btn.primary {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--dark);
+}
+@media (min-width: 900px) {
+  .top-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+    align-items: center;
+    gap: 48px;
+  }
 }
 .guide {
   margin-bottom: 32px;
@@ -673,4 +705,9 @@ a {
 .partner {
   font-weight: 600;
   color: var(--dark);
+}
+
+/* Focus rings on the dark header need a light color to be seen. */
+.top :focus-visible {
+  outline-color: #ffffff;
 }
