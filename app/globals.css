@@ -1666,14 +1666,21 @@ a {
   }
 }
 
-.chooser-head .hero-art {
+.chooser-art {
+  color: var(--on-dark);
   display: none;
+  background: var(--dark);
+  border-radius: 14px;
+  padding: 10px;
 }
 @media (min-width: 1280px) {
   .chooser-head {
     grid-template-columns: minmax(0, 1fr) 360px;
   }
-  .chooser-head .hero-art {
+  .chooser-art {
+    display: block;
+  }
+  .chooser-art .hero-art {
     display: block;
     width: 100%;
     height: auto;
@@ -1694,9 +1701,4 @@ a {
   .hero-lines p + p {
     margin-top: 2px;
   }
-}
-.chooser-head .hero-art {
-  background: var(--dark);
-  border-radius: 14px;
-  padding: 10px;
 }

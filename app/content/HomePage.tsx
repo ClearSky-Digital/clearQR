@@ -56,7 +56,9 @@ export function HomePage() {
         <section id="how" className="wrap home-band" aria-labelledby="h-chooser">
           <div className="chooser-head">
             <h2 id="h-chooser">{CHOOSER.title}</h2>
-            <HomeArt />
+            <div className="chooser-art">
+              <HomeArt />
+            </div>
           </div>
           <Chooser hrefs={hrefs} />
         </section>
