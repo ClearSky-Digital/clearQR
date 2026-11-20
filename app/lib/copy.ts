@@ -35,7 +35,7 @@ export const GUIDE = {
     ["Forward it", "Set up a temporary redirect (called a 302) from that short address to the page you want. Use a rule in Cloudflare, a plugin in WordPress, or the redirect setting at your web host."],
     ["Change it later", "To send people somewhere new, edit the redirect, and the printed code stays the same. We host nothing and keep no list of your codes."],
   ] as [string, string][],
-  changeableCta: "Want this done for you? Setup help is a paid service: fill in the short form, and we set it up.",
+  changeableCta: "Want this done for you? Setup help is a paid service: fill in the short form, and we get in touch to talk it through.",
 } as const;
 
 export const CALLOUT = {
