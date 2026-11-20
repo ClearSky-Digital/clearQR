@@ -4,7 +4,7 @@ import { addCampaignTags } from "@/core";
  * Links ClearQR shows in the page. They are plain links: nothing is fetched, and the page
  * sends no data anywhere. Values are fixed at build time.
  */
-export const DEFAULT_CONTACT_URL = "https://cscloud.digital/start/";
+export const DEFAULT_CONTACT_URL = "https://cscloud.digital/free-qr-code-generator/#setup-help";
 
 const OUR_TAGS = { source: "clearqr", medium: "app" } as const;
 

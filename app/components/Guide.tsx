@@ -1,5 +1,31 @@
-import { COMPARISON, GUIDE, PATHS, TIP } from "../lib/copy";
+import { COMPARISON, GUIDE, PATHS, PITCH, TIP } from "../lib/copy";
 import { setupLink, tipLink } from "../lib/site";
+
+export const GUIDE_ID = "guide";
+
+/** Opens the guide when a jump link points at it, then lets the browser scroll there. */
+export function openGuide(doc: { getElementById(id: string): unknown } = document): void {
+  const el = doc.getElementById(GUIDE_ID) as { open: boolean } | null;
+  if (el) el.open = true;
+}
+
+export function Pitch({ setup = setupLink() }: { setup?: string }) {
+  return (
+    <section className="card pitch" aria-labelledby="h-pitch">
+      <h2 id="h-pitch">{PITCH.headline}</h2>
+      <p>{PITCH.text}</p>
+      <p className="pitch-links">
+        <a className="btn primary" href="#h-guide" onClick={() => openGuide()}>
+          {PITCH.how}
+        </a>
+        <a className="btn" href={setup} target="_blank" rel="noopener noreferrer">
+          {PITCH.help}
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      </p>
+    </section>
+  );
+}
 
 export function TipCard({ href = tipLink() }: { href?: string | null }) {
   if (!href) return null;
@@ -18,7 +44,7 @@ export function TipCard({ href = tipLink() }: { href?: string | null }) {
 export function Guide({ setup = setupLink() }: { setup?: string }) {
   return (
     <section className="card guide" aria-labelledby="h-guide">
-      <details>
+      <details id={GUIDE_ID}>
         <summary>
           <h2 id="h-guide">{GUIDE.title}</h2>
           <span className="guide-hint">Campaign tags, Google Analytics, and codes you can change later</span>
@@ -42,6 +68,12 @@ export function Guide({ setup = setupLink() }: { setup?: string }) {
         {GUIDE.changeable.map((t) => (
           <p key={t}>{t}</p>
         ))}
+        <p>
+          <a href={setup} target="_blank" rel="noopener noreferrer">
+            {GUIDE.changeableCta}
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
+        </p>
         {COMPARISON && (
           <>
             <h3>{COMPARISON.title}</h3>

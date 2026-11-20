@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Logo } from "./Logo";
-import { Guide, TipCard } from "./Guide";
+import { Guide, Pitch, TipCard } from "./Guide";
 import { tipLink } from "../lib/site";
 import { TIP } from "../lib/copy";
 import {
@@ -221,6 +221,7 @@ export default function Generator() {
       </header>
 
       <main className="wrap">
+        <Pitch />
         <p className="privacy" id="privacy">
           <strong>Nothing leaves your device.</strong> Your text, contact details, photos and settings stay in this
           browser tab. The code is drawn and checked here, with no uploads, no accounts, no analytics and no tracking.

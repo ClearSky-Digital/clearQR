@@ -603,6 +603,24 @@ a {
   color: var(--dark);
   text-decoration: none;
 }
+.pitch {
+  margin-bottom: 16px;
+  border-left: 5px solid var(--blue);
+}
+.pitch h2 {
+  margin: 0 0 6px;
+}
+.pitch p {
+  max-width: 72ch;
+}
+.pitch-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.pitch .btn {
+  text-decoration: none;
+}
 .guide {
   margin-bottom: 32px;
 }

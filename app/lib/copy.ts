@@ -22,11 +22,19 @@ export const GUIDE = {
   limits:
     "The numbers are visits to your page. Ad blockers and cookie banners hide some visits, so treat the counts as a minimum. Test the final address in a private window before you print.",
   changeableTitle: "Make a printed code changeable, on your own",
+  changeableCta: "Want this done for you? Fill in the short setup-help form and we will set it up.",
   changeable: [
     "A printed code is fixed, and a short address on your own domain is flexible. Make the code point to yoursite.com/qr/flyer. Then send that address wherever you like, today and later. You own the domain, so the code keeps working as long as you keep the domain.",
     "Three free ways to forward it: a redirect rule in Cloudflare, a redirect plugin in WordPress, or the redirect setting at your web host. Use a temporary redirect (called a 302), so browsers keep checking your short address.",
     "We host nothing and keep no list of your codes.",
   ],
+} as const;
+
+export const PITCH = {
+  headline: "Trackable and changeable QR codes, free.",
+  text: "Many tools charge a subscription for trackable, changeable codes. With ClearQR you get both without a subscription, using tools you already have. Add campaign tags, and your own analytics counts the scans. Point the code at a short address on your own domain, and you can change where it goes later.",
+  how: "How to set it up",
+  help: "Get help setting it up",
 } as const;
 
 export const PATHS = {

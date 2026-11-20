@@ -4,8 +4,8 @@ import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import Generator from "../app/components/Generator";
-import { Guide, TipCard } from "../app/components/Guide";
-import { COMPARISON, GUIDE, PATHS, TIP } from "../app/lib/copy";
+import { Guide, GUIDE_ID, Pitch, TipCard, openGuide } from "../app/components/Guide";
+import { COMPARISON, GUIDE, PATHS, PITCH, TIP } from "../app/lib/copy";
 import { root } from "./helpers";
 
 const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
@@ -28,6 +28,50 @@ describe("guide, paths and tip card", () => {
     expect(tip).toMatch(/<a [^>]*target="_blank"[^>]*rel="noopener noreferrer"|<a [^>]*rel="noopener noreferrer"[^>]*target="_blank"/);
     expect(tip).toContain("(opens in a new tab)");
   });
+  it("the top message says what ClearQR is, without claiming hosted codes or charging for plain codes", () => {
+    const html = renderToStaticMarkup(createElement(Pitch));
+    expect(html).toContain(PITCH.headline);
+    expect(html).toContain('href="#h-guide"');
+    expect(html).toMatch(/href="https:\/\/cscloud\.digital\/free-qr-code-generator\/\?utm_source=clearqr&amp;utm_medium=app&amp;utm_campaign=setup-help#setup-help"[^>]*target="_blank"/);
+    expect(html).toContain("(opens in a new tab)");
+    expect(PITCH.text).toMatch(/\bMany\b/);
+    expect(PITCH.text).not.toMatch(/\b(dynamic|host|hosted|all|every|always|never)\b/i);
+    expect(PITCH.text).not.toMatch(/[$\u20ac\u00a3]|\bUSD\b|\bprice|[\u2013\u2014]| - /i);
+  });
+  it("the page puts the top message in the main area", () => {
+    expect(renderToStaticMarkup(createElement(Generator))).toContain(PITCH.headline);
+  });
+  it("the guide carries the id the jump link needs, and the jump link opens it", () => {
+    expect(renderToStaticMarkup(createElement(Guide))).toContain(`<details id="${GUIDE_ID}"`);
+    const el = { open: false };
+    openGuide({ getElementById: (id: string) => (id === GUIDE_ID ? el : null) });
+    expect(el.open).toBe(true);
+    expect(() => openGuide({ getElementById: () => null })).not.toThrow();
+  });
+  it("the jump link click handler opens the guide", () => {
+    const find = (n: any): any => {
+      if (!n || typeof n !== "object") return null;
+      if (n.props?.href === "#h-guide") return n;
+      const kids = [n.props?.children].flat(Infinity);
+      for (const k of kids) { const r = find(k); if (r) return r; }
+      return null;
+    };
+    const link = find(Pitch({}));
+    expect(typeof link?.props.onClick).toBe("function");
+    const el = { open: false };
+    const real = (globalThis as any).document;
+    (globalThis as any).document = { getElementById: (id: string) => (id === GUIDE_ID ? el : null) };
+    try { link.props.onClick(); } finally { (globalThis as any).document = real; }
+    expect(el.open).toBe(true);
+  });
+  it("the changeable-code section links to the setup-help form in a new tab", () => {
+    const html = renderToStaticMarkup(createElement(Guide));
+    const at = html.indexOf(GUIDE.changeableCta);
+    expect(at).toBeGreaterThan(0);
+    const anchor = html.slice(html.lastIndexOf("<a ", at), at);
+    expect(anchor).toContain("free-qr-code-generator/?utm_source=clearqr");
+    expect(anchor).toContain('target="_blank"');
+  });
   it("the footer tip link opens in a new tab and says so", () => {
     const src = readFileSync(join(root, "app", "components", "Generator.tsx"), "utf8");
     const m = src.match(/<a href=\{tipLink\(\) as string\}[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
@@ -37,7 +81,7 @@ describe("guide, paths and tip card", () => {
   });
   it("the setup help link opens in a new tab and says so", () => {
     const guide = renderToStaticMarkup(createElement(Guide));
-    const a = guide.match(/<a [^>]*href="https:\/\/cscloud\.digital\/start\/[^"]*"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
+    const a = guide.match(/<a [^>]*href="https:\/\/cscloud\.digital\/free-qr-code-generator\/[^"]*"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
     expect(a).toContain('target="_blank"');
     expect(a).toContain('rel="noopener noreferrer"');
     expect(a).toContain("(opens in a new tab)");
