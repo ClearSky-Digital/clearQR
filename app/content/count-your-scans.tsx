@@ -128,12 +128,10 @@ export function Body() {
       <section className="card" aria-labelledby="h-trust">
         <h2 id="h-trust">What your QR code analytics can tell you</h2>
         <p>
-          Setting up analytics is your own job. ClearQR does not create or read your analytics. If you would like a person to set it up with
-          you,{" "}
+          You can set up analytics yourself. ClearQR does not create or read your analytics. Setup help is a paid service where we do the work.{" "}
           <a href={setup} target="_blank" rel="noopener noreferrer">
-            ask for setup help<span className="sr-only"> (opens in a new tab)</span>
+            Ask for setup help<span className="sr-only"> (opens in a new tab)</span>
           </a>
-          .
         </p>
         <div className="pair">
           <div className="pair-box">

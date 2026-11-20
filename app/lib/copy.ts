@@ -35,21 +35,21 @@ export const GUIDE = {
     ["Forward it", "Set up a temporary redirect (called a 302) from that short address to the page you want. Use a rule in Cloudflare, a plugin in WordPress, or the redirect setting at your web host."],
     ["Change it later", "To send people somewhere new, edit the redirect, and the printed code stays the same. We host nothing and keep no list of your codes."],
   ] as [string, string][],
-  changeableCta: "Want this done for you? Fill in the short setup-help form and we will set it up.",
+  changeableCta: "Want this done for you? Setup help is a paid service: fill in the short form, and we set it up.",
 } as const;
 
 export const CALLOUT = {
   diy: "Do it yourself",
   diyNote: "see the steps",
-  help: "We set it up",
-  helpNote: "ask for help",
+  help: "We set it up (paid)",
+  helpNote: "ask for setup help",
 } as const;
 
 export const PITCH = {
   headline: "Trackable and changeable QR codes, free.",
   text: "Many tools charge a subscription for trackable, changeable codes. With ClearQR you get both without a subscription, using tools you already have. Add campaign tags, and your own analytics counts the visits each code brings. Point the code at a short address on your own domain, and you can change where it goes later.",
   how: "How to set it up",
-  help: "Get help setting it up",
+  help: "Ask for paid setup help",
 } as const;
 
 export const PATHS = {
@@ -57,14 +57,14 @@ export const PATHS = {
   freeTitle: "Do it yourself",
   free: "Everything above is free, and you can use it as often as you like.",
   helpTitle: "We set it up for you",
-  help: "We will set up the tags, the goal in your analytics, and the forwarding address, then show you how to read the results.",
+  help: "Setup help is a paid service where we do the work. We tag your codes, check that Google Analytics is set up properly, set up the view that shows your results and explain it, set up your landing page or short address, and show you how to manage and change it later.",
   helpLink: "Ask for setup help",
-  partnership: "We do well when your business does well, so we would rather save you a bill than add one.",
+  partnership: "The guides and the ClearQR app stay free.",
 } as const;
 
 export const TIP = {
   title: "Did ClearQR save you a subscription?",
-  text: "ClearQR is free, and its codes keep working. If it ended one more monthly expense for your business, a tip is a kind way to say thanks. Tips are optional, are not donations, and are not tax-deductible. We build our tools to keep your costs down.",
+  text: "ClearQR is free, and its codes keep working. If it ended one more monthly expense for your business, a tip is a kind way to say thanks. Tips are optional, are not donations, and are not tax-deductible. We build our tools to be free to use.",
   button: "Leave a tip",
   footer: "Tips say thanks",
 } as const;
