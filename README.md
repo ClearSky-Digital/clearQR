@@ -13,6 +13,7 @@ ClearQR is free. If it saves you a subscription, you can [leave a tip](https://c
 - Image mode: blend a photo with the code.
 - Output: PNG and SVG.
 - A scan check: every code is read back in the browser (or the terminal) and marked "scans" or "won't scan" before you download it.
+- Campaign tags for link codes: optional source, medium, campaign and content values are added to the address as `utm_` tags before the code is made, so your own analytics can tell a flyer from a business card. ClearQR counts nothing itself. The app has a short guide to reading the results in Google Analytics and to making a printed code changeable with a short link on your own domain.
 
 ## Privacy
 
@@ -36,6 +37,22 @@ node dist/cli.mjs examples/link.json -o link.png
 ```
 
 Options: `-o <file>`, `--format png|svg`, `--no-verify`. Exit codes: 0 written and scans, 1 usage, 2 invalid config, 3 written but won't scan.
+
+## Campaign tags in a config
+
+A link code can carry tags. An existing `utm_` value in the address is kept, and source and medium are needed together:
+
+```json
+{
+  "type": "link",
+  "content": {
+    "url": "https://example.com/menu",
+    "campaign": { "source": "flyer", "medium": "print", "campaign": "spring-sale" }
+  }
+}
+```
+
+The code then carries `https://example.com/menu?utm_source=flyer&utm_medium=print&utm_campaign=spring-sale`.
 
 ## Config
 
@@ -73,14 +90,15 @@ Each release is published as the image `ghcr.io/clearsky-digital/clearqr`, tagge
 To try it on your own computer:
 
 ```
-docker run --rm -p 8088:8080 ghcr.io/clearsky-digital/clearqr:1.0.2
+docker run --rm -p 8088:8080 ghcr.io/clearsky-digital/clearqr:1.1.0
 ```
 
 The app is then at `http://localhost:8088/clearqr/`.
 
 On a server behind a reverse proxy, use `docker-compose.yml`. It pulls the release image and publishes no host port. Instead it joins the proxy's existing Docker network, and the proxy forwards to `clearqr:8080` with the subpath unchanged. Two settings:
 
-- `CLEARQR_TAG`: the release to run (default `1.0.2`).
+- `CLEARQR_TAG`: the release to run (default `1.1.0`).
+- Build options (`--build-arg`): `NEXT_PUBLIC_CLEARQR_TIP_URL` shows a "Leave a tip" card and footer link when set to an https address (hidden when empty), and `NEXT_PUBLIC_CLEARQR_CONTACT_URL` sets the "Ask for setup help" link (default `https://cscloud.digital/start/`). Both are plain links, fixed at build time, and the page makes no requests of its own.
 - `PROXY_NETWORK`: the name of the proxy's external network (default `publictools`).
 
 With Nginx Proxy Manager, edit the proxy host, open the Advanced tab (not a custom location's gear) and paste:

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PRESETS, PRESET_NAMES } from "./presets";
+import { addCampaignTags, campaignSchema } from "./tracking";
 
 /* ---------- shared pieces ---------- */
 
@@ -23,7 +24,16 @@ const httpUrl = z
 
 /* ---------- content, one shape per type ---------- */
 
-export const linkContent = z.object({ url: httpUrl }).strict();
+export const linkContent = z
+  .object({ url: httpUrl, campaign: campaignSchema.optional() })
+  .strict()
+  .refine((c) => {
+    try {
+      return addCampaignTags(c.url, c.campaign).length <= 2500;
+    } catch {
+      return true; // a broken tag is reported by its own rule
+    }
+  }, "The address with its tags is too long for a code. Shorten the address or the tags.");
 export const textContent = z.object({ text: z.string().min(1).max(2000) }).strict();
 
 export const vcardContent = z

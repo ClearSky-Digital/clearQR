@@ -2,9 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Logo } from "./Logo";
+import { Guide, TipCard } from "./Guide";
+import { tipLink } from "../lib/site";
+import { TIP } from "../lib/copy";
 import {
   PRESETS,
   QR_TYPES,
+  applyCampaign,
   parseConfig,
   renderSvg,
   verify,
@@ -14,7 +18,7 @@ import {
 } from "@/core";
 import { browserRasterizer, fileToDataUri } from "../lib/browserRaster";
 import { canDownload, importTooLarge, vcardImportNotice } from "../lib/rules";
-import { TYPE_META, contentToForm, emptyValues, formToContent, type Field, type Values } from "../lib/forms";
+import { CAMPAIGN_PRESETS, TYPE_META, contentToForm, emptyValues, formToContent, type Field, type Values } from "../lib/forms";
 
 type StyleState = {
   dotColor: string;
@@ -83,6 +87,10 @@ export default function Generator() {
   const rawKey = useMemo(() => JSON.stringify(raw), [raw]);
   const parsed = useMemo(() => parseConfig(JSON.parse(rawKey)), [rawKey]);
   const config: Config | null = parsed.ok ? parsed.config : null;
+  const finalUrl = useMemo(() => {
+    if (!config || config.type !== "link" || !config.content.campaign) return null;
+    return applyCampaign(config.content.url, config.content.campaign);
+  }, [config]);
 
   useEffect(() => {
     const id = ++runId.current;
@@ -240,11 +248,49 @@ export default function Generator() {
             </div>
             <div className="fields">
               {meta.fields
+                .filter((f) => f.group !== "campaign")
                 .filter((f) => !f.showIf || f.showIf(values))
                 .map((f) => (
                   <FieldInput key={`${type}-${f.key}`} field={f} value={values[f.key]} onChange={(v) => setValue(f.key, v)} />
                 ))}
             </div>
+            {type === "link" && (
+              <details className="campaign">
+                <summary>Campaign tags (optional)</summary>
+                <p className="fine">
+                  Tags let your own website analytics tell which printed piece brought each visit. See the guide below.
+                </p>
+                <div className="chips" role="group" aria-label="Campaign presets">
+                  {CAMPAIGN_PRESETS.map((p) => (
+                    <button
+                      key={p.label}
+                      type="button"
+                      className="chip"
+                      onClick={() =>
+                        setValuesByType((all) => ({ ...all, link: { ...all.link, utmSource: p.source, utmMedium: p.medium } }))
+                      }
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="fields">
+                  {meta.fields
+                    .filter((f) => f.group === "campaign")
+                    .map((f) => (
+                      <FieldInput key={`${type}-${f.key}`} field={f} value={values[f.key]} onChange={(v) => setValue(f.key, v)} />
+                    ))}
+                </div>
+                {finalUrl && (
+                  <p className="final-url">
+                    <strong>Address in your code:</strong> <span className="mono">{finalUrl.url}</span>
+                    {finalUrl.kept.length > 0 && (
+                      <span className="fine"> Your address already had {finalUrl.kept.join(", ")}, so we left those as they were.</span>
+                    )}
+                  </p>
+                )}
+              </details>
+            )}
           </section>
 
           <section className="card area-preview" aria-labelledby="h-preview">
@@ -482,6 +528,8 @@ export default function Generator() {
             )}
           </section>
         </div>
+        <TipCard />
+        <Guide />
       </main>
 
       <footer className="foot">
@@ -489,6 +537,15 @@ export default function Generator() {
           <p>
             ClearQR is free and open source under the MIT license. Built and maintained by{" "}
             <a href="https://cscloud.digital" rel="noopener noreferrer">ClearSky Digital</a>.
+            {tipLink() && (
+              <>
+                {" "}
+                <a href={tipLink() as string} rel="noopener noreferrer">
+                  {TIP.footer}
+                </a>
+                .
+              </>
+            )}
           </p>
         </div>
       </footer>

@@ -28,6 +28,18 @@ const mutations = [
     find: "export function escapeWifi(s: string): string {",
     replace: "export function escapeWifi(s: string): string {\n  return s;\n}\nfunction unusedEscapeWifi(s: string): string {",
   },
+  {
+    name: "campaign tags drop the #fragment",
+    file: "src/core/tracking.ts",
+    find: 'const fragment = hash === -1 ? "" : url.slice(hash);',
+    replace: 'const fragment = "";',
+  },
+  {
+    name: "campaign tags overwrite a utm key already in the address",
+    file: "src/core/tracking.ts",
+    find: "if (present.has(name)) kept.push(name);",
+    replace: "if (false) kept.push(name);",
+  },
 ];
 
 function runTests(dir) {
@@ -40,7 +52,7 @@ function runTests(dir) {
 function copyTo(dir) {
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
-  for (const p of ["src", "app", "tests", "scripts", "examples", "schema", "vitest.config.ts", "tsconfig.json", "package.json"]) {
+  for (const p of ["src", "app", "tests", "scripts", "examples", "schema", "public", "vitest.config.ts", "tsconfig.json", "package.json"]) {
     cpSync(join(root, p), join(dir, p), { recursive: true, filter: (s) => !s.includes(`${join("tests", ".tmp")}`) });
   }
 }

@@ -1,4 +1,5 @@
 import type { Config } from "./schema";
+import { addCampaignTags } from "./tracking";
 
 /** Text escaping shared by vCard and iCalendar: backslash, semicolon, comma, newline. */
 export function escapeText(s: string): string {
@@ -69,7 +70,7 @@ function query(params: Record<string, string | undefined>): string {
 export function buildPayload(config: Config): string {
   switch (config.type) {
     case "link":
-      return config.content.url;
+      return addCampaignTags(config.content.url, config.content.campaign);
     case "text":
       return config.content.text;
     case "phone":

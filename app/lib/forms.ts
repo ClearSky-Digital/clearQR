@@ -9,6 +9,8 @@ export type Field = {
   placeholder?: string;
   help?: string;
   options?: { value: string; label: string }[];
+  /** Fields in the "campaign" group are drawn in their own collapsed block, not in the main list. */
+  group?: "campaign";
   /** Hide the field unless this returns true. */
   showIf?: (v: Values) => boolean;
 };
@@ -26,8 +28,14 @@ export const TYPE_META: Record<QrType, TypeMeta> = {
   link: {
     label: "Link",
     blurb: "Opens a web page.",
-    fields: [{ key: "url", label: "Web address", kind: "url", placeholder: "https://example.com" }],
-    defaults: { url: "https://example.com" },
+    fields: [
+      { key: "url", label: "Web address", kind: "url", placeholder: "https://example.com" },
+      { key: "utmSource", label: "Source", kind: "text", placeholder: "flyer", group: "campaign", help: "Where the code will be seen." },
+      { key: "utmMedium", label: "Medium", kind: "text", placeholder: "print", group: "campaign", help: "The kind of thing it is on." },
+      { key: "utmCampaign", label: "Campaign name", kind: "text", placeholder: "spring-sale", group: "campaign", help: "A name you choose." },
+      { key: "utmContent", label: "Content (optional)", kind: "text", placeholder: "version-a", group: "campaign", help: "Tells two versions apart." },
+    ],
+    defaults: { url: "https://example.com", utmSource: "", utmMedium: "", utmCampaign: "", utmContent: "" },
   },
   text: {
     label: "Text",
@@ -140,7 +148,12 @@ const drop = <T extends Record<string, unknown>>(o: T): Partial<T> =>
 export function formToContent(type: QrType, v: Values): unknown {
   switch (type) {
     case "link":
-      return { url: str(v, "url") };
+      return drop({
+        url: str(v, "url"),
+        campaign: ["utmSource", "utmMedium", "utmCampaign", "utmContent"].some((k) => str(v, k) !== "")
+          ? drop({ source: str(v, "utmSource"), medium: str(v, "utmMedium"), campaign: str(v, "utmCampaign"), content: str(v, "utmContent") })
+          : undefined,
+      } as Record<string, unknown>);
     case "text":
       return { text: typeof v.text === "string" ? v.text : "" };
     case "vcard":
@@ -236,7 +249,13 @@ export function contentToForm(type: QrType, c: Record<string, unknown>): Values 
         location: s("location"),
         description: s("description"),
       };
-    }    default: {
+    }
+    case "link": {
+      const camp = (c.campaign ?? {}) as Record<string, unknown>;
+      const t = (k: string) => (camp[k] === undefined || camp[k] === null ? "" : String(camp[k]));
+      return { url: s("url"), utmSource: t("source"), utmMedium: t("medium"), utmCampaign: t("campaign"), utmContent: t("content") };
+    }
+    default: {
       const out: Values = {};
       for (const f of TYPE_META[type].fields) out[f.key] = f.kind === "checkbox" ? c[f.key] === true : s(f.key);
       return out;
@@ -244,3 +263,12 @@ export function contentToForm(type: QrType, c: Record<string, unknown>): Values 
   }
 }
 
+
+/** One-click starting points for the campaign tags. The campaign name is left for the person to type. */
+export const CAMPAIGN_PRESETS: { label: string; source: string; medium: string }[] = [
+  { label: "Flyer", source: "flyer", medium: "print" },
+  { label: "Business card", source: "business-card", medium: "print" },
+  { label: "Vehicle", source: "vehicle", medium: "print" },
+  { label: "Mailer", source: "mailer", medium: "print" },
+  { label: "Packaging", source: "packaging", medium: "print" },
+];

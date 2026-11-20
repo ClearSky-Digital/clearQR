@@ -547,3 +547,112 @@ a {
     transition: border-color 0.15s ease, background-color 0.15s ease;
   }
 }
+
+/* Campaign tags, guide, paths and tip card */
+.campaign {
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.campaign summary,
+.guide summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--blue-deep);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+.chip {
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--blue-deep);
+  background: var(--page);
+  border: 1px solid var(--blue);
+  border-radius: 999px;
+  padding: 8px 14px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.final-url {
+  margin: 12px 0 0;
+  overflow-wrap: anywhere;
+}
+.mono {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9rem;
+}
+.tip {
+  margin-bottom: 16px;
+  border-left: 5px solid var(--orange);
+}
+.tip p {
+  max-width: 70ch;
+}
+.tip .btn {
+  flex: 0 0 auto;
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--dark);
+  text-decoration: none;
+}
+.guide {
+  margin-bottom: 32px;
+}
+.guide summary {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.guide summary h2 {
+  margin: 0;
+}
+.guide-hint {
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+.guide details > h3,
+.paths h3 {
+  font-size: 1.05rem;
+  margin: 18px 0 6px;
+  color: var(--dark);
+}
+.guide p,
+.guide li {
+  max-width: 72ch;
+}
+.paths {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 4px;
+}
+.paths-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 720px) {
+  .paths-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.paths h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: var(--blue-deep);
+}
+.paths .btn {
+  flex: 0 0 auto;
+  text-decoration: none;
+}
+.partner {
+  font-weight: 600;
+  color: var(--dark);
+}

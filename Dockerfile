@@ -5,7 +5,12 @@
 FROM node:24-bookworm-slim AS build
 WORKDIR /app
 ARG CLEARQR_BASE_PATH=/clearqr
+# Optional links shown in the page, fixed at build time. Leave the tip link empty to hide the tip card.
+ARG NEXT_PUBLIC_CLEARQR_TIP_URL=
+ARG NEXT_PUBLIC_CLEARQR_CONTACT_URL=
 ENV CLEARQR_BASE_PATH=${CLEARQR_BASE_PATH} \
+    NEXT_PUBLIC_CLEARQR_TIP_URL=${NEXT_PUBLIC_CLEARQR_TIP_URL} \
+    NEXT_PUBLIC_CLEARQR_CONTACT_URL=${NEXT_PUBLIC_CLEARQR_CONTACT_URL} \
     NEXT_TELEMETRY_DISABLED=1
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
