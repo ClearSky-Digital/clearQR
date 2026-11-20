@@ -100,7 +100,7 @@ On a server behind a reverse proxy, use `docker-compose.yml`. It pulls the relea
 - `CLEARQR_TAG`: the release to run (default `1.1.0`).
 - `PROXY_NETWORK`: the name of the proxy's external network (default `publictools`).
 
-The released image is built with the tip and setup-help links at their defaults and no tip link. `NEXT_PUBLIC_CLEARQR_TIP_URL` (shows a "Leave a tip" card and footer link when set to an https address), `NEXT_PUBLIC_CLEARQR_CONTACT_URL` (the "Ask for setup help" link; default `https://cscloud.digital/qr-code-marketing/#setup-help`) and `NEXT_PUBLIC_CLEARQR_GUIDES_URL` are build options (`--build-arg`), so a different value needs your own build.
+The released image is built with the tip and setup-help links at their defaults and no tip link. `NEXT_PUBLIC_CLEARQR_TIP_URL` (shows a "Leave a tip" card and footer link when set to an https address), `NEXT_PUBLIC_CLEARQR_CONTACT_URL` (the "Ask for setup help" link; default `https://cscloud.digital/qr-code-marketing/#setup-help`) and `NEXT_PUBLIC_CLEARQR_GUIDES_URL` are build options (`--build-arg`), so a different value needs your own build. For a release with the tip card, build with `--build-arg NEXT_PUBLIC_CLEARQR_TIP_URL=https://cscloud.digital/tip/`.
 
 With Nginx Proxy Manager, add a proxy host for your domain with scheme `http`, forward hostname `clearqr-app` and port `8080`, and turn on TLS. No custom location is needed.
 
@@ -136,3 +136,11 @@ MIT. See `LICENSE` and `NOTICE`.
 ### Moving the app to a new address
 
 Set `CLEARQR_REDIRECT_TO` (a plain https address) when you build the image to get a redirect-only container: every request gets a permanent (301) redirect to the same path on the new address, and the old subpath is dropped (build with `--build-arg CLEARQR_BASE_PATH=/clearqr` so the old address is recognized). For example `--build-arg CLEARQR_REDIRECT_TO=https://example.org` sends `/clearqr/guide/?a=1` to `https://example.org/guide/?a=1`. The container also answers `/healthz` with 200 so a health check does not follow the redirect.
+
+To retire an old subpath address, build the redirect image with both settings:
+
+```
+docker build -t clearqr:redirect --build-arg CLEARQR_BASE_PATH=/clearqr --build-arg CLEARQR_REDIRECT_TO=https://clearqr.app .
+```
+
+Checked on a local container: `/clearqr/`, `/clearqr` and `/Clearqr/` go to `https://clearqr.app/`, `/clearqr/count-your-scans/?a=1` goes to `https://clearqr.app/count-your-scans/?a=1`, and the old `/clearqr/make/` goes to `https://clearqr.app/#generator`. Run it as the container the old address's proxy host points at.
