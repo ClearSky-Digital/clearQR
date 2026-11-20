@@ -4,6 +4,8 @@ Free QR codes with no account, no limits and no subscription. Everything is draw
 
 Built and maintained by [ClearSky Digital](https://cscloud.digital).
 
+The code in this repository is MIT licensed. The guide text and page copy on clearqr.app are copyright ClearSky Digital LLC, all rights reserved; see [CONTENT-LICENSE.md](CONTENT-LICENSE.md).
+
 ClearQR is free. If it saves you a subscription, you can [leave a tip](https://cscloud.digital/tip/) as a thank-you for our free tools. Tips are optional, are not donations, and are not tax-deductible.
 
 ## What it makes
