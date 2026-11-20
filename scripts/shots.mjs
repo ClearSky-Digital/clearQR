@@ -18,7 +18,7 @@ export default async function ({ base, args }) {
         await page.goto(base + u, { waitUntil: "load" });
         await page.waitForTimeout(300);
         const name = (u.replace(/\//g, "_") || "_") + `-${w}.png`;
-        await page.screenshot({ path: path.join(dir, name), fullPage: false });
+        await page.screenshot({ path: path.join(dir, name), fullPage: true });
         console.log("wrote", path.join(dir, name));
       }
       await ctx.close();

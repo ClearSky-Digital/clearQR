@@ -937,3 +937,299 @@ a {
     opacity: 1;
   }
 }
+
+/* Home page: hero lines and buttons, the chooser, the free band, developer rows, the close band */
+.hero-lines {
+  margin-top: 12px;
+}
+.hero-lines p {
+  margin: 0;
+  color: var(--on-dark);
+}
+.hero-buttons {
+  margin: 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.hero-buttons .btn {
+  flex: 0 0 auto;
+  text-decoration: none;
+}
+.hero-buttons .btn.primary {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--dark);
+}
+.home-hero .fine {
+  margin: 18px auto 0;
+  color: var(--on-dark);
+}
+.home-hero .hero-art {
+  display: none;
+}
+.home-hero h1 {
+  max-width: 22ch;
+}
+@media (min-width: 560px) {
+  .hero-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+@media (min-width: 1100px) {
+  .home-hero .top-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  .home-hero .hero-art {
+    display: block;
+    width: 100%;
+    max-width: 440px;
+    height: auto;
+    margin-left: auto;
+  }
+}
+.home-band {
+  padding-top: 32px;
+  padding-bottom: 8px;
+}
+.home-band h2 {
+  margin-bottom: 16px;
+}
+/* The chooser: rows and one answer panel. The answers share one cell, so the panel is as tall as the longest. */
+.chooser {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
+}
+.chooser-rows {
+  display: grid;
+  gap: 8px;
+  grid-auto-rows: 1fr;
+}
+.choice-tab {
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  color: var(--ink);
+  background: #ffffff;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-height: 56px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.choice-tab:hover {
+  border-color: var(--blue);
+}
+.choice-tab[aria-selected="true"] {
+  border-color: var(--blue-deep);
+  background: var(--page);
+  box-shadow: inset 5px 0 0 var(--orange);
+}
+.chooser-answers {
+  display: grid;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+}
+.chooser-answers .answer {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  min-width: 0;
+}
+.chooser-answers .answer.on {
+  visibility: visible;
+}
+.answer-title {
+  display: none;
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+  color: var(--dark);
+}
+.chooser .answer p {
+  margin: 0 0 12px;
+  max-width: 72ch;
+}
+.answer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+}
+.answer-btn {
+  flex: 0 0 auto;
+  text-decoration: none;
+}
+.shuffle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.shuffle .shuffle-line {
+  margin: 0;
+  flex: 1 1 240px;
+  color: var(--ink-soft);
+}
+.shuffle-btn {
+  flex: 0 0 auto;
+}
+.shuffle-all {
+  display: none;
+}
+.shuffle-all h4 {
+  margin: 8px 0 4px;
+}
+@media (min-width: 1100px) {
+  .chooser {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 20px;
+    align-items: stretch;
+  }
+  .chooser-answers {
+    padding: 24px 28px;
+  }
+}
+@media print {
+  .chooser-rows,
+  .shuffle {
+    display: none !important;
+  }
+  .chooser-answers {
+    display: block;
+  }
+  .chooser-answers .answer {
+    visibility: visible;
+    margin-bottom: 16px;
+  }
+  .answer-title,
+  .shuffle-all {
+    display: block;
+  }
+}
+/* The free band: a short text beside a level list of facts */
+.free-pair {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+}
+.free-pair h2 {
+  margin-bottom: 12px;
+}
+.free-pair p {
+  margin: 0 0 12px;
+  max-width: 60ch;
+}
+.free-list {
+  list-style: none;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+  align-content: center;
+}
+.free-list li {
+  padding-left: 18px;
+  border-left: 4px solid var(--orange);
+}
+@media (min-width: 900px) {
+  .free-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+.dev-intro {
+  margin: 0 0 12px;
+}
+.dev-rows details {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 4px 16px;
+  margin-bottom: 8px;
+}
+.dev-rows summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--blue-deep);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.dev-rows p {
+  margin: 0 0 12px;
+  overflow-wrap: anywhere;
+}
+.dev-rows code {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9rem;
+  background: var(--page);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.more-guides {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+.more-guides a {
+  margin-left: 8px;
+}
+.close-band {
+  background: var(--dark);
+  color: var(--on-dark);
+  border-top: 4px solid var(--orange);
+  margin-top: 32px;
+  padding: 32px 0;
+}
+.close-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+.close-band h2 {
+  color: #ffffff;
+}
+.close-band .btn {
+  flex: 0 0 auto;
+  text-decoration: none;
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--dark);
+}
+.close-band .trademark {
+  margin: 0;
+  font-size: 0.85rem;
+}
+.close-band :focus-visible {
+  outline-color: #ffffff;
+}
+/* Home art motion: bars rise, the arrow draws in, under no-preference only; the final frame is the static one */
+@media (prefers-reduced-motion: no-preference) {
+  .home-art .bar {
+    transform-box: fill-box;
+    transform-origin: bottom;
+    animation: bar-up 0.8s ease both;
+  }
+  .home-art .bar-1 { animation-delay: 0.1s; }
+  .home-art .bar-2 { animation-delay: 0.2s; }
+  .home-art .bar-3 { animation-delay: 0.3s; }
+  .home-art .bar-4 { animation-delay: 0.4s; }
+  .home-art .art-arrow {
+    animation: art-in 0.7s ease 0.8s both;
+  }
+}
+@keyframes bar-up {
+  from {
+    transform: scaleY(0.1);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}

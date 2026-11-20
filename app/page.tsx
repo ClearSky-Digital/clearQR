@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Generator from "./components/Generator";
+import { HomePage } from "./content/HomePage";
 import { canonicalUrl } from "./lib/pages";
 
 export const metadata: Metadata = {
@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <Generator />;
+  return <HomePage />;
 }
