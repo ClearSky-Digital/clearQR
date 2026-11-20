@@ -3,9 +3,9 @@ import { HomePage } from "./content/HomePage";
 import { canonicalUrl } from "./lib/pages";
 
 export const metadata: Metadata = {
-  title: "Free Open Source QR Codes: Count and Change Them Yourself",
+  title: "Free QR Code Generator: Open Source, No Account",
   description:
-    "ClearQR is a free, open source QR code generator. Count the visits a code brings in your own analytics, and change where it goes with your own web address. No account.",
+    "Free QR code generator with no account. Count its visits in your own analytics, and change where a code goes with a short address on your own domain.",
   alternates: { canonical: canonicalUrl("") },
 };
 

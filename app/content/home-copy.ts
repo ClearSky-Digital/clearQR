@@ -5,15 +5,13 @@
 export type LinkKey = "app" | "expire" | "track" | "change" | "static" | "setup";
 
 export const HERO = {
-  h1: "Free open source QR codes you can count and change",
+  h1: "A free QR code generator that is open source and needs no account",
   lines: [
-    "ClearQR makes the code and tracks nothing.",
-    "Your own analytics counts the visits.",
-    "Your own web address makes the code changeable.",
-    "ClearQR is free, with no account.",
+    "Make a code below, in your browser. A short address on your own domain makes it changeable.",
+    "ClearQR tracks nothing; your own analytics counts.",
   ],
   make: "Make a code",
-  how: "See how it works",
+  how: "See how counting and changing work",
   help: "Get setup help",
   fine: "Counting and changing a code often needs a paid plan elsewhere (as of November 2026).",
   alt: "A flyer with a ClearQR code that stays as printed. Beside it, your analytics counts the visits, and your own web address points the code at a new page.",
@@ -55,7 +53,7 @@ export const CHOOSER = {
     {
       id: "count",
       title: "Tell me how many people scan it",
-      text: "ClearQR tracks nothing; your own analytics counts. When you make a link code, add a label for where it will go, such as flyer or mailer. The label travels inside the address, so your own analytics can show which flyer or card brought each visit. This works when your page already has analytics. Counts are a minimum, because ad blockers and cookie banners hide some visits.",
+      text: "Your own analytics counts the visits. When you make a link code, add a label for where it will go, such as flyer or mailer. The label travels inside the address, so your own analytics can show which flyer or card brought each visit. This works when your page already has analytics. Counts are a minimum, because ad blockers and cookie banners hide some visits.",
       links: [{ label: "Count your scans", to: "track" }],
       more: [
         "You see which flyer brought the most visits.",
@@ -99,7 +97,7 @@ export const CHOOSER = {
 
 export const FREE = {
   title: "What free means here",
-  text: "ClearQR is open source under the MIT license, so a copy you keep stays free to use. It makes the code in your browser.",
+  text: "ClearQR is open source under the MIT license, so a copy you keep stays free to use. It makes the code in your browser, on this page.",
   facts: [
     "Hosted by us at no cost, so you can skip GitHub.",
     "Open source, with the code there to read.",

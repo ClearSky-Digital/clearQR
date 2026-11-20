@@ -105,7 +105,7 @@ const probe = () => {
   }
 
   // 4 an empty hero
-  if (vw >= 1280) {
+  if (vw >= 1280 && !document.querySelector("#generator")) { // a page whose hero hands straight to the generator uses the tool as its picture (member's split, 2026-11-19)
     const hero = document.querySelector(".top");
     const sec = hero;
     if (hero && sec) {

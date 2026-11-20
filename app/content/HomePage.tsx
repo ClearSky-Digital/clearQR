@@ -39,14 +39,13 @@ export function HomePage() {
               ))}
             </div>
             <p className="hero-links">
-              <a href="#chooser">{HERO.how}</a>
+              <a href="#how">{HERO.how}</a>
               <a href={setup} target="_blank" rel="noopener noreferrer">
                 {HERO.help}
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
             </p>
           </div>
-          <HomeArt />
         </div>
       </section>
       <main>
@@ -54,8 +53,11 @@ export function HomePage() {
           <Generator embedded />
           <p className="wrap fine gen-fine">{HERO.fine}</p>
         </section>
-        <section id="chooser" className="wrap home-band" aria-labelledby="h-chooser">
-          <h2 id="h-chooser">{CHOOSER.title}</h2>
+        <section id="how" className="wrap home-band" aria-labelledby="h-chooser">
+          <div className="chooser-head">
+            <h2 id="h-chooser">{CHOOSER.title}</h2>
+            <HomeArt />
+          </div>
           <Chooser hrefs={hrefs} />
         </section>
         <section className="wrap home-band" aria-labelledby="h-free">
