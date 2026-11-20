@@ -70,7 +70,7 @@ One JSON file describes a code: `type`, `content`, `style`, `image` and `output`
 
 ## About the scan check
 
-The check uses a software decoder at several sizes. It is a strong sign, not a guarantee: phone cameras differ, and printing changes things. Test a printed code with your own phone before you print many.
+The check uses a software decoder at several sizes. It is a strong sign that the code will scan, and phone cameras differ, and printing changes things. Test a printed code with your own phone before you print many.
 
 ## Hosting headers
 

@@ -363,8 +363,8 @@ export default function Generator({ embedded = false }: { embedded?: boolean } =
               </p>
             )}
             <p className="fine">
-              The check reads your code the way a phone camera app would, at a few sizes. It is a strong sign, not a
-              guarantee. Test a printed code with your own phone before you print a lot of them.
+              The check reads your code the way a phone camera app would, at a few sizes. It is a strong sign that the
+              code will scan, and phones differ. Test a printed code with your own phone before you print a lot of them.
             </p>
           </section>
 
