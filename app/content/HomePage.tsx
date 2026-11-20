@@ -4,6 +4,9 @@ import { HomeArt } from "../components/HomeArt";
 import { SiteBar, SiteFooter } from "../components/SiteChrome";
 import { readyGuides } from "../lib/pages";
 import { setupLink } from "../lib/site";
+
+/** Plain links need the base path by hand (Link adds it itself). It is "" for a site root, and /clearqr in the default image. */
+const at = (path: string) => `${process.env.CLEARQR_BASE_PATH || ""}${path}`;
 import { CHOOSER, CLOSE, DEV, FREE, HERO } from "./home-copy";
 
 /** Without script every answer shows as a list, as in print. */
@@ -13,10 +16,10 @@ const NO_SCRIPT_CSS =
 /** The mini-site home page. A guide link shows only when that guide has real copy. */
 export function HomePage() {
   const ready = new Set(readyGuides().map((g) => g.slug));
-  const hrefs: Hrefs = { app: "/make/", setup: setupLink() };
-  if (ready.has("do-qr-codes-expire")) hrefs.expire = "/do-qr-codes-expire/";
-  if (ready.has("count-your-scans")) hrefs.track = "/count-your-scans/";
-  if (ready.has("changeable-code")) hrefs.change = "/changeable-code/";
+  const hrefs: Hrefs = { app: at("/make/"), setup: setupLink() };
+  if (ready.has("do-qr-codes-expire")) hrefs.expire = at("/do-qr-codes-expire/");
+  if (ready.has("count-your-scans")) hrefs.track = at("/count-your-scans/");
+  if (ready.has("changeable-code")) hrefs.change = at("/changeable-code/");
   const more = readyGuides().filter((g) => g.slug === "static-vs-dynamic");
   const setup = hrefs.setup as string;
   return (
@@ -35,7 +38,7 @@ export function HomePage() {
               ))}
             </div>
             <p className="hero-buttons">
-              <a className="btn primary" href="/make/">
+              <a className="btn primary" href={hrefs.app}>
                 {HERO.make}
               </a>
               <a className="btn" href="#chooser">
@@ -85,7 +88,7 @@ export function HomePage() {
           <p className="wrap more-guides">
             {CLOSE.more}{" "}
             {more.map((g) => (
-              <a key={g.slug} href={`/${g.slug}/`}>
+              <a key={g.slug} href={at(`/${g.slug}/`)}>
                 {g.nav}
               </a>
             ))}
@@ -95,7 +98,7 @@ export function HomePage() {
       <section className="close-band" aria-labelledby="h-close">
         <div className="wrap close-inner">
           <h2 id="h-close">{CLOSE.title}</h2>
-          <a className="btn primary" href="/make/">
+          <a className="btn primary" href={hrefs.app}>
             {CLOSE.button}
           </a>
           <p className="trademark">{CLOSE.trademark}</p>
