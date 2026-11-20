@@ -152,11 +152,13 @@ export const DEV = {
       body: ["MIT license, with the copyright held by ClearSky Digital LLC. You may copy, change, and share it with the license notice kept."],
     },
     {
-      title: "How the page keeps its data on your device",
+      title: "What the page's policy blocks",
       body: [
         "The page carries a Content-Security-Policy that includes ",
         { code: "connect-src 'none'" },
-        ", so its own scripts are blocked from sending any request. It sits in a meta tag, and the Docker image also sends it as a header.",
+        ", which stops its own scripts from opening network connections (fetch, XMLHttpRequest, WebSocket and similar), and ",
+        { code: "form-action 'none'" },
+        ", which stops form submissions. A link you click still opens its page. It sits in a meta tag, and the Docker image also sends it as a header.",
       ],
     },
   ] as { title: string; body: (string | { code: string })[] }[],

@@ -23,7 +23,7 @@ describe("home page copy", () => {
     const readme = readFileSync("README.md", "utf8");
     for (const row of DEV.rows) {
       for (const part of row.body) {
-        if (typeof part !== "string" && part.code.length > 12 && !part.code.includes("<") && !part.code.startsWith("connect-src")) expect(readme, part.code).toContain(part.code);
+        if (typeof part !== "string" && part.code.length > 12 && !part.code.includes("<") && !part.code.startsWith("connect-src") && !part.code.startsWith("form-action")) expect(readme, part.code).toContain(part.code);
       }
     }
   });
@@ -31,6 +31,9 @@ describe("home page copy", () => {
     expect(DEV.rows.some((r) => text(r.body).includes("connect-src 'none'"))).toBe(true);
     expect(readFileSync("app/layout.tsx", "utf8")).toContain("connect-src 'none'");
     expect(readFileSync("deploy/nginx.conf", "utf8")).toContain("connect-src 'none'");
+    expect(DEV.rows.some((r) => text(r.body).includes("form-action 'none'"))).toBe(true);
+    expect(readFileSync("app/layout.tsx", "utf8")).toContain("form-action 'none'");
+    expect(readFileSync("deploy/nginx.conf", "utf8")).toContain("form-action 'none'");
   });
   it("says visits for counts and never promises tracking by ClearQR", () => {
     const joined = all.join(" ");
